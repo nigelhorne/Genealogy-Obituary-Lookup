@@ -174,8 +174,9 @@ sub search
 	if(wantarray) {
 		my @obituaries = @{$self->{'obituaries'}->selectall_hashref($params)};
 		foreach my $obit(@obituaries) {
-			$obit->{'url'} = _create_url($obit);
+			$obit->{'url'} = _create_url($obit) if(defined($obit));
 		}
+		@obituaries = grep { defined $_ } @obituaries;
 		Data::Reuse::fixate(@obituaries);
 		return @obituaries;
 	}
