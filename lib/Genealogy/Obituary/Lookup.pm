@@ -179,13 +179,15 @@ sub search
 	}
 
 	if(wantarray) {
-		my @obituaries = @{$self->{'obituaries'}->selectall_hashref($params)};
-		foreach my $obit(@obituaries) {
-			$obit->{'url'} = _create_url($obit) if(defined($obit));
+		if(my $obituaries = $self->{'obituaries'}->selectall_hashref($params)) {
+			foreach my $obit(@{$obituaries}) {
+				$obit->{'url'} = _create_url($obit) if(defined($obit));
+			}
+			my @rc = grep { defined $_ } @{$obituaries};
+			Data::Reuse::fixate(@rc);
+			return @rc;
 		}
-		@obituaries = grep { defined $_ } @obituaries;
-		Data::Reuse::fixate(@obituaries);
-		return @obituaries;
+		return;
 	}
 	if(defined(my $obit = $self->{'obituaries'}->fetchrow_hashref($params))) {
 		$obit->{'url'} = _create_url($obit);
