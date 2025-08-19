@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
+# Test for broken smokers that don't set AUTOMATED_TESTING
 if(my $reporter = $ENV{'PERL_CPAN_REPORTER_CONFIG'}) {
 	if($reporter =~ /smoker/i) {
 		warn 'AUTOMATED_TESTING added for you';
@@ -50,8 +51,8 @@ my $prereqs = {
 	'File::Spec' => 0,
 	'File::Temp' => 0,
 	'Module::Info' => 0,
-	'Object::Configure' => 0.10,
-	'Params::Get' => 0.04,
+	'Object::Configure' => 0.12,
+	'Params::Get' => 0.13,
 	'Return::Set' => 0,
 	'Scalar::Util' => 0,
 	'Text::CSV' => 0,
