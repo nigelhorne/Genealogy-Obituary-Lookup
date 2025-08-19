@@ -8,7 +8,7 @@ use Data::Reuse;
 use File::Spec;
 use Genealogy::Obituary::Lookup::obituaries;
 use Module::Info;
-use Object::Configure 0.10;
+use Object::Configure 0.12;
 use Params::Get 0.13;
 use Return::Set;
 use Scalar::Util;
@@ -30,6 +30,13 @@ Version 0.18
 =cut
 
 our $VERSION = '0.18';
+
+# Class-level constants
+use constant {
+	DEFAULT_CACHE_DURATION => '1 day',	# The database is updated daily
+	MIN_LAST_NAME_LENGTH   => 1,
+	MAX_LAST_NAME_LENGTH   => 100,
+};
 
 =head1 SYNOPSIS
 
@@ -120,7 +127,7 @@ sub new
 
 	# cache_duration can be overridden by the args
 	return bless {
-		cache_duration => '1 day',	# The database is updated daily
+		cache_duration => DEFAULT_CACHE_DURATION,
 		%args,
 	}, $class;
 }
