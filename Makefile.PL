@@ -111,7 +111,7 @@ WriteMakefile(
 	dist => $dist,
 	clean => { FILES => 'Genealogy-Obituary-Lookup-*' },
 	realclean => {
-		FILES => 'Genealogy-Obituary-Lookup-* lib/Genealogy/Obituary-Lookup/data'
+		FILES => 'Genealogy-Obituary-Lookup-* lib/Genealogy/Obituary/Lookup/data'
 	},
 	# META_ADD => {
 		# provides => {}
