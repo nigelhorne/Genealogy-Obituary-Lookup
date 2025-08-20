@@ -526,6 +526,7 @@ sub funeral_notices
 		} else {
 			die "Can't find location in $url";
 		}
+		$place =~ s/'/''/g;	# E.g. St Augustine's
 		$place .= ', United Kingdom';
 		if($content =~ /published in:<\/span> (.+)<\/h2>/is) {
 			if($1 =~ /funeral-notices.co.uk\./) {
