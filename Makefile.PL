@@ -111,7 +111,9 @@ WriteMakefile(
 	dist => $dist,
 	clean => { FILES => 'Genealogy-Obituary-Lookup-*' },
 	realclean => {
-		FILES => 'Genealogy-Obituary-Lookup-* lib/Genealogy/Obituary/Lookup/data'
+		# This would seem logical, but it will break "make && make test" even though you don't call "make realclean"
+		# FILES => 'Genealogy-Obituary-Lookup-* lib/Genealogy/Obituary/Lookup/data'
+		FILES => 'Genealogy-Obituary-Lookup-*'
 	},
 	# META_ADD => {
 		# provides => {}
