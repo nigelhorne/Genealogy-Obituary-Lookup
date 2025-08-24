@@ -20,10 +20,10 @@ jobs:
         os:
           - name: freebsd
             version: '13.3'
-            pkginstall: pkg install -y p5-ExtUtils-MakeMaker p5-DBD-SQLite p5-File-Slurp p5-LWP-Protocol-https p5-XML-Parser
+            pkginstall: pkg install -y p5-ExtUtils-MakeMaker p5-DBD-SQLite p5-File-Slurp p5-LWP-Protocol-https p5-XML-Parser p5-Test-Most
           - name: openbsd
             version: '7.5'
-            pkginstall: pkg_add p5-DBD-SQLite p5-File-Slurp p5-LWP-Protocol-https p5-XML-Parser
+            pkginstall: pkg_add p5-DBD-SQLite p5-File-Slurp p5-LWP-Protocol-https p5-XML-Parser p5-Test-Most
     steps:
       - uses: actions/checkout@main
         with:
