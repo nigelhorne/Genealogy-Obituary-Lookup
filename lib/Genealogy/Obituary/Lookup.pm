@@ -10,6 +10,7 @@ use Genealogy::Obituary::Lookup::obituaries;
 use Module::Info;
 use Object::Configure 0.12;
 use Params::Get 0.13;
+use Params::Validate::Strict 0.09;
 use Return::Set;
 use Scalar::Util;
 
@@ -156,12 +157,88 @@ or C<undef> if there is no match.
 
 =back
 
+=head3	FORMAL SPECIFICATION
+
+=head4	INPUT
+
+  schema => {
+    'last' => {
+      type => 'string',
+      min => 1,
+      max => 100,
+      matches => qr/^[\w\-]+$/	# Allow hyphens in surnames
+    }, 'first' => {
+      type => 'string',
+      optional => 1,
+      min => 1,
+      max => 100
+    }, 'middle' => {
+      type => 'string',
+      optional => 1,
+      min => 1,
+      max => 100
+    }, 'age' => {
+      type => 'integer',
+      optional => 1,
+      min => 1,
+      max => 120
+    }
+  }
+
+=head4	OUTPUT
+
+Argument error: croak
+No matches found: undef
+
+Scalar context:
+
+  {
+    'type' => 'hashref',
+    'min' => 1
+  }
+
+List context:
+
+  {
+    'type' => 'array',
+    'min' => 1
+  }
+
 =cut
 
 sub search
 {
 	my $self = shift;
-	my $params = Params::Get::get_params('last', @_);
+
+	# Ensure $self is valid
+	Carp::croak('search() must be called on an object') unless(Scalar::Util::blessed($self));
+
+        my $params = Params::Validate::Strict::validate_strict({
+		args => Params::Get::get_params('last', @_),
+		schema => {
+			'last' => {
+				type => 'string',
+				min => 1,
+				max => 100,
+				matches => qr/^[\w\-]+$/	# Allow hyphens in surnames
+			}, 'first' => {
+				type => 'string',
+				optional => 1,
+				min => 1,
+				max => 100
+			}, 'middle' => {
+				type => 'string',
+				optional => 1,
+				min => 1,
+				max => 100
+			}, 'age' => {
+				type => 'integer',
+				optional => 1,
+				min => 1,
+				max => 120
+			}
+		}
+	});
 
 	# Validate required parameters thoroughly
 	unless((defined($params->{'last'})) && (length($params->{'last'}) > 0)) {

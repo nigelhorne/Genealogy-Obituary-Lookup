@@ -2,6 +2,7 @@ Revision history for Genealogy::Obituary::Lookup
 
 0.20
 	Handle the location "St. Augustine's"
+	Use Params::Validate::Strict
 
 0.19	Tue Aug 19 19:59:45 EDT 2025
 	Look in the correct place for the default directory
