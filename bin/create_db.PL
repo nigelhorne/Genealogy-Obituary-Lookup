@@ -47,6 +47,7 @@ BEGIN {
 my %normalised;
 my $force_flag;
 my $dir = 'lib/Genealogy/Obituary/Lookup/data';
+my $bdir = File::Spec->catdir('blib', $dir);
 
 if(defined($ARGV[0]) && ($ARGV[0] eq '-f')) {
 	$force_flag++;
@@ -194,6 +195,12 @@ $dbh->prepare('CREATE INDEX name_index ON obituaries(first, last)')->execute();
 $dbh->prepare('CREATE INDEX name_age_index ON obituaries(first, last, age)')->execute();
 $dbh->do('pragma optimize');
 $dbh->disconnect();
+
+if(-d $bdir) {
+	my $bfilename = File::Spec->catdir($bdir, 'obituaries.sql');
+	unlink($bfilename) if(-e $bfilename);
+	link $filename, $bfilename;
+}
 
 # Import the data section
 sub data

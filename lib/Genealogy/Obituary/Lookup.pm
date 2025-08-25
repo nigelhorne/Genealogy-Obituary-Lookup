@@ -161,7 +161,7 @@ or C<undef> if there is no match.
 
 =head4	INPUT
 
-  schema => {
+  {
     'last' => {
       type => 'string',
       min => 1,
