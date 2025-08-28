@@ -180,7 +180,7 @@ or C<undef> if there is no match.
     }, 'age' => {
       type => 'integer',
       optional => 1,
-      min => 1,
+      min => 0,
       max => 120
     }
   }
@@ -234,7 +234,7 @@ sub search
 			}, 'age' => {
 				type => 'integer',
 				optional => 1,
-				min => 1,
+				min => 0,
 				max => 120
 			}
 		}
