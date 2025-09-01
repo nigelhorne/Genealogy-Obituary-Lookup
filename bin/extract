@@ -4,18 +4,17 @@
 
 use strict;
 use warnings;
+use autodie qw(:all);
 
 use MIME::QuotedPrint;
 use Path::Tiny;
 use URI::Find;
 
-my $filename = $ARGV[0];
-
 # Read from a file if given, otherwise from STDIN
 my $content;
 if(@ARGV == 1) {
 	# Decode quoted-printable content
-	$content = decode_qp(Path::Tiny::path($filename)->slurp());
+	$content = decode_qp(Path::Tiny::path($ARGV[0])->slurp());
 } else {
 	local $/;
 	$content = decode_qp(<STDIN>);
