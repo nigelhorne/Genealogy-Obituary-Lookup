@@ -129,6 +129,8 @@ foreach my $line (split/^/ms, $data) {
 	}
 }
 
+
+funeral_notices('taylor', 5229508);
 while(my($last, $page) = each %notices) {
 	funeral_notices($last, $page);
 }
@@ -493,7 +495,7 @@ sub funeral_notices
 
 	# Fetch the webpage
 	my $response = $ua->get($url);
-	die "Failed to fetch the webpage: ", $response->status_line unless $response->is_success;
+	die 'Failed to fetch the webpage: ', $response->status_line() unless $response->is_success();
 	my $content = $response->decoded_content();
 
 	my $maiden;
