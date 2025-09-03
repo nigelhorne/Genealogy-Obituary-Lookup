@@ -12,7 +12,7 @@
 use strict;
 use warnings;
 
-# use Data::Dumper;
+use Data::Dumper;
 use DBI;
 # use DBD::SQLite::Constants qw/:file_open/;	# For SQLITE_OPEN_READONLY
 use File::HomeDir;
@@ -129,8 +129,7 @@ foreach my $line (split/^/ms, $data) {
 	}
 }
 
-
-funeral_notices('taylor', 5229508);
+# funeral_notices('taylor', 5229508);
 while(my($last, $page) = each %notices) {
 	funeral_notices($last, $page);
 }
@@ -587,9 +586,13 @@ sub queue($$$$$$$$$)
 		# $age =~ s/\s+//g;
 		# $columns{'age'} = $age;
 	# }
-	if(defined $age && $age =~ /^\d+$/) {
-		# $age =~ s/\s+//g;
-		$columns{age} = $age;
+	if(defined($age)) {
+		$age =~ s/\s+//g;
+		if($age =~ /\D/) {
+			print STDERR Data::Dumper->new([\@_])->Dump();
+			die "Invalid age '$age'";
+		}
+		$columns{age} = $age if(length($age));
 	}
 
 	# Add maiden name if provided
@@ -731,4 +734,5 @@ __DATA__
 "Malva",,"Ridge",88,,"2024-02-15","https://funeral-notices.co.uk/notice/ridge/5174115"
 "Paul",,"Batchelor",60,,"2024-02-21","https://funeral-notices.co.uk/notice/batchelor/5175192"
 "Pamela",,"Lambert",82,,"2024-02-24","https://funeral-notices.co.uk/notice/lambert/5175963"
-"Rodney",,"Bishop",84,"Brownwood, TX, USA","2024-02-26","https://www.brownwoodnews.com/2024/02/26/rodney-dwain-bishop/"
+"Rodney",,"Bishop",,84,"Brownwood, TX, USA","2024-02-26","https://www.brownwoodnews.com/2024/02/26/rodney-dwain-bishop/"
+"Wallace","Elizabeth","Wallace",,65,"Algonquin Grace Hospice, AL, USA","2025-09-29","https://doppleronline.ca/huntsville/sharon-elizabeth-wallace/"
