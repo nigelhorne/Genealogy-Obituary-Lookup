@@ -90,6 +90,7 @@ HTTP::Cache::Transparent::init({
 print "This will take some time. It'd be best to go and make yourself a cup of tea.\n";
 
 my $ua = LWP::UserAgent::WithCache->new(timeout => 60, keep_alive => 1);
+# my $ua = LWP::UserAgent->new(timeout => 60, keep_alive => 1);
 $ua->env_proxy(1);
 $ua->agent('Mozilla/5.0');
 $ua->conn_cache()->total_capacity(undef);
@@ -281,7 +282,15 @@ sub mlarchives($$) {
 	while(my $line = shift(@lines)) {
 		# LAST NAME, First Name (MAIDEN); Age; Place of Death; Newspaper Name; Newspaper date; tagname
 
+		chomp $line;
+		next if(length($line) == 0);
 		next if((defined($last_line)) && ($line eq $last_line));
+		if(($line =~ /The Obituary Daily Times \(ODT\) is/) ||
+		   ($line =~ /To unsubscribe from this mailing list, please send a message/)) {
+			$stage = 0;
+			next;
+		}
+		last if($line =~ /^RootsWeb is funded and supported/);
 		$last_line = $line;
 
 		$line =~ s/^\n//;
@@ -347,8 +356,17 @@ sub mlarchives($$) {
 		$line = decode_entities($line);
 		$line =~ s/'/''/g;
 		my ($name, $age, $place, $newspaper, $date, $tag) = split(/;\s?/, $line);
+		if(defined($age) && ($age =~ /D/)) {
+			# Handle emails?listname=gen-obit&page=33
+			#	HAGEN, Anton Oliver; Crosby ND&gt;Great Falls MT; Great Falls MT; GFTrib; 2013-4-15; ndvivi
+			my $unknown;
+			($name, $place, $newspaper, $unknown, $date, $tag) = split(/;\s?/, $line);
+		}
 
-		next if((!defined($tag)) || ($tag eq ''));
+		if((!defined($tag)) || ($tag eq '')) {
+			warn "$url: no tag in '$line'";
+		}
+		# print "$page: $tag\n";
 
 		# print __LINE__, ": $page: '$line' ", Data::Dumper->new([split(/;\s?/, $line)])->Dump();
 		next unless(defined($name));
@@ -372,10 +390,11 @@ sub mlarchives($$) {
 			queue($first, normalise_name($last), $maiden, $age, $place, $date, $newspaper, 'M', $page);
 			# $entries++;
 		}
+		# $maiden ||= '';
 		# print "\"$last\",\"$first\",\"$maiden\",\"$age\",\"$place\",\"$date\",\"$newspaper\"\n" if($last =~ /^[A-Z]/);
 		$rc = 1;
 	}
-	die "Couldn't parse $url" if(!defined($rc));
+	die "\nCouldn't parse $url" if(!defined($rc));
 	# print "\n\t$entries\n";
 	return 1;
 }
@@ -590,7 +609,8 @@ sub queue($$$$$$$$$)
 		$age =~ s/\s+//g;
 		if($age =~ /\D/) {
 			print STDERR Data::Dumper->new([\@_])->Dump();
-			die "Invalid age '$age'";
+			warn "Invalid age '$age'";
+			return;
 		}
 		$columns{age} = $age if(length($age));
 	}
