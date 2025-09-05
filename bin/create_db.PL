@@ -89,7 +89,7 @@ HTTP::Cache::Transparent::init({
 
 print "This will take some time. It'd be best to go and make yourself a cup of tea.\n";
 
-my $ua = LWP::UserAgent::WithCache->new(timeout => 60, keep_alive => 1);
+my $ua = $force_flag ? LWP::UserAgent->new(timeout => 60, keep_alive => 1) : LWP::UserAgent::WithCache->new(timeout => 60, keep_alive => 1);
 # my $ua = LWP::UserAgent->new(timeout => 60, keep_alive => 1);
 $ua->env_proxy(1);
 $ua->agent('Mozilla/5.0');
