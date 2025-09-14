@@ -107,6 +107,13 @@ sub new
 	# Load the configuration from a config file, if provided
 	%args = %{Object::Configure::configure($class, \%args)};
 
+	# Validate logger object has required methods
+	if(defined $args{'logger'}) {
+		unless(Scalar::Util::blessed($args{'logger'}) && $args{'logger'}->can('info') && $args{'logger'}->can('error')) {
+			Carp::croak("Logger must be an object with info() and error() methods");
+		}
+	}
+
 	if(!defined(my $directory = ($args{'directory'} || $Genealogy::Obituary::Lookup::obituaries->{'directory'}))) {
 		# If the directory argument isn't given, see if we can find the data
 		$directory = Module::Info->new_from_loaded($class)->file();
@@ -115,15 +122,11 @@ sub new
 	}
 
 	unless((-d $args{'directory'}) && (-r $args{'directory'})) {
+		if(my $logger = $args{'logger'}) {
+			$logger->warn("$class: $args{directory} is not a directory");
+		}
 		Carp::carp("$class: $args{directory} is not a directory");
 		return;
-	}
-
-	# Validate logger object has required methods
-	if(defined $args{'logger'}) {
-		unless(Scalar::Util::blessed($args{'logger'}) && $args{'logger'}->can('info') && $args{'logger'}->can('error')) {
-			Carp::croak("Logger must be an object with info() and error() methods");
-		}
 	}
 
 	# cache_duration can be overridden by the args
