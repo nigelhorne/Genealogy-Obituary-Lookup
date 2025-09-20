@@ -15,7 +15,7 @@ Genealogy::Obituary::Lookup - Lookup an obituary
 
 # VERSION
 
-Version 0.19
+Version 0.20
 
 # SYNOPSIS
 
@@ -73,7 +73,7 @@ Supports two return modes:
 
 #### INPUT
 
-    schema => {
+    {
       'last' => {
         type => 'string',
         min => 1,
@@ -92,7 +92,7 @@ Supports two return modes:
       }, 'age' => {
         type => 'integer',
         optional => 1,
-        min => 1,
+        min => 0,
         max => 120
       }
     }

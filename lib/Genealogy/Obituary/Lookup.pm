@@ -16,8 +16,8 @@ use Scalar::Util;
 
 use constant URLS => {
 	# 'M' => "https://mlarchives.rootsweb.com/listindexes/emails?listname=gen-obit&page=",
-	'M' => "https://wayback.archive-it.org/20669/20231102044925/https://mlarchives.rootsweb.com/listindexes/emails?listname=gen-obit&page=",
-	'F' => "https://www.freelists.org/post/obitdailytimes/Obituary-Daily-Times-",
+	'M' => 'https://wayback.archive-it.org/20669/20231102044925/https://mlarchives.rootsweb.com/listindexes/emails?listname=gen-obit&page=',
+	'F' => 'https://www.freelists.org/post/obitdailytimes/Obituary-Daily-Times-',
 };
 
 =head1 NAME
@@ -26,11 +26,11 @@ Genealogy::Obituary::Lookup - Lookup an obituary
 
 =head1 VERSION
 
-Version 0.19
+Version 0.20
 
 =cut
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 # Class-level constants
 use constant {
