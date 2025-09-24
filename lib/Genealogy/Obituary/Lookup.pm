@@ -245,6 +245,9 @@ sub search
 
 	# Validate required parameters thoroughly
 	unless((defined($params->{'last'})) && (length($params->{'last'}) > 0)) {
+		if(my $logger = $self->{'logger'}) {
+			$logger->warn("Value for 'last' is mandatory");
+		}
 		Carp::carp("Value for 'last' is mandatory");
 		return;
 	}
@@ -255,6 +258,9 @@ sub search
 	$self->{'obituaries'} ||= Genealogy::Obituary::Lookup::obituaries->new(no_entry => 1, no_fixate => 1, %{$self});
 
 	if(!defined($self->{'obituaries'})) {
+		if(my $logger = $self->{'logger'}) {
+			$logger->error("Can't open the obituaries database");
+		}
 		Carp::croak("Can't open the obituaries database");
 	}
 
