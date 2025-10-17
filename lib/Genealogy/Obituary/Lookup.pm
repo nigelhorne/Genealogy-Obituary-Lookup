@@ -160,7 +160,7 @@ or C<undef> if there is no match.
 
 =back
 
-=head3	FORMAL SPECIFICATION
+=head3	API SPECIFICATION
 
 =head4	INPUT
 
