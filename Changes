@@ -1,5 +1,8 @@
 Revision history for Genealogy::Obituary::Lookup
 
+0.21
+	Latest Log::Abstraction uses croak rather than carp on warnings
+
 0.20	Sat Sep 20 16:13:10 EDT 2025
 	Handle the location "St. Augustine's"
 	Use Params::Validate::Strict

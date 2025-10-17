@@ -246,10 +246,9 @@ sub search
 	# Validate required parameters thoroughly
 	unless((defined($params->{'last'})) && (length($params->{'last'}) > 0)) {
 		if(my $logger = $self->{'logger'}) {
-			$logger->warn("Value for 'last' is mandatory");
+			$logger->error("Value for 'last' is mandatory");
 		}
-		Carp::carp("Value for 'last' is mandatory");
-		return;
+		Carp::croak("Value for 'last' is mandatory");
 	}
 
 	# Sanitize input to prevent SQL injection
