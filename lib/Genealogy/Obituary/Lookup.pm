@@ -317,7 +317,7 @@ sub _create_url {
 
 =head1 AUTHOR
 
-Nigel Horne, C<< <njh at bandsman.co.uk> >>
+Nigel Horne, C<< <njh at nigelhorne.com> >>
 
 =head1 BUGS
 
@@ -349,6 +349,8 @@ L<https://www.freelists.org/list/obitdailytimes>
 =item * Older data
 
 L<https://obituaries.rootsweb.com/obits/searchObits>
+
+=item * Test coverage report: L<https://nigelhorne.github.io/Genealogy-Obituary-Lookup/coverage/>
 
 =back
 

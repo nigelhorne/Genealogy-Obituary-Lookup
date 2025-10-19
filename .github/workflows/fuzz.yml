@@ -24,6 +24,13 @@ jobs:
         with:
           perl-version: '5.38'
 
+      - name: Update Ubuntu Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get -y upgrade
+          sudo apt install libwww-perl
+        if: runner.os == 'Linux'
+
       - name: Install App::Test::Generator this module's dependencies
         run: |
           cpanm App::Test::Generator

@@ -83,7 +83,7 @@ if($^O eq 'darwin') {
 
 WriteMakefile(
 	NAME		=> 'Genealogy::Obituary::Lookup',
-	AUTHOR		=> q{Nigel Horne <njh@bandsman.co.uk>},
+	AUTHOR		=> q{Nigel Horne <njh@nigelhorne.com>},
 	VERSION_FROM	=> 'lib/Genealogy/Obituary/Lookup.pm',	# finds $VERSION in the module
 	ABSTRACT_FROM	=> 'lib/Genealogy/Obituary/Lookup.pm',
 	((defined($ExtUtils::MakeMaker::VERSION) &&
@@ -97,6 +97,7 @@ WriteMakefile(
 	CONFIGURE_REQUIRES => {
 		'ExtUtils::MakeMaker' => 6.64,	# Minimum version for TEST_REQUIRES
 	}, TEST_REQUIRES => {
+		'Database::Abstraction' => 0,
 		'FindBin' => 0,
 		'File::Temp' => 0,
 		'Test::Carp' => 0,
