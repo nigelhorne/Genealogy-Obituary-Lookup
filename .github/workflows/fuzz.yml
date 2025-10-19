@@ -1,0 +1,42 @@
+---
+name: Fuzz Testing
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  schedule:
+    - cron: '29 5 20 * *'
+
+jobs:
+  generate-fuzz-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Perl
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: '5.38'
+
+      - name: Install App::Test::Generator this module's dependencies
+        run: |
+          cpanm App::Test::Generator
+          cpanm --installdeps .
+
+      - name: Generate fuzz tests
+        run: |
+          mkdir t/fuzz
+          find t/conf -name '*.yml' | while read config; do
+            test_name=$(basename "$config" .conf)
+            fuzz-harness-generator "$config" > "t/fuzz/${test_name}_fuzz.t"
+          done
+
+      - name: Run generated fuzz tests
+        run: |
+          prove -lr t/fuzz/
