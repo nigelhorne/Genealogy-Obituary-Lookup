@@ -24,7 +24,7 @@ jobs:
       - name: Set up Perl
         uses: shogo82148/actions-setup-perl@v1
         with:
-          perl-version: '5.38'
+          perl-version: '5.42'
 
       - name: Update Ubuntu Packages
         run: |
@@ -36,6 +36,7 @@ jobs:
       - name: Install App::Test::Generator this module's dependencies
         run: |
           cpanm App::Test::Generator
+          find . -name build.log | xargs cat
           cpanm --installdeps .
 
       - name: Generate fuzz tests
