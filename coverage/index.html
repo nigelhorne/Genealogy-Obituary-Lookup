@@ -84,15 +84,31 @@
 
 <tbody>
 
-<tr class="med"><td><a href="blib-lib-Genealogy-Obituary-Lookup-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/8ded31a46e4df46f807d8d17f129a9ee955094f6/blib/lib/Genealogy/Obituary/Lookup.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points=""></canvas></td><td>81.5</td><td>57.7</td><td>52.4</td><td>100.0</td><td><span class="coverage-badge badge-warn" title="Moderate coverage">74.2%</span></td><td class="neutral" title="No previous data">&#9679;</td></tr>
+<tr class="med"><td><a href="blib-lib-Genealogy-Obituary-Lookup-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/d884e2ef62b177d61490f34492a7d3f32a87848c/blib/lib/Genealogy/Obituary/Lookup.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="74.2"></canvas></td><td>81.5</td><td>57.7</td><td>52.4</td><td>100.0</td><td><span class="coverage-badge badge-warn" title="Moderate coverage">74.2%</span></td><td class="neutral" title="Previous: 74.2%">&#9679; 0.0%</td></tr>
 
-<tr class="high"><td><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup/obituaries.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/8ded31a46e4df46f807d8d17f129a9ee955094f6/blib/lib/Genealogy/Obituary/Lookup/obituaries.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points=""></canvas></td><td>100.0</td><td>0.0</td><td>0.0</td><td>100.0</td><td><span class="coverage-badge badge-good" title="Excellent coverage">100.0%</span></td><td class="neutral" title="No previous data">&#9679;</td></tr>
+<tr class="high"><td><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup/obituaries.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/d884e2ef62b177d61490f34492a7d3f32a87848c/blib/lib/Genealogy/Obituary/Lookup/obituaries.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="100.0"></canvas></td><td>100.0</td><td>0.0</td><td>0.0</td><td>100.0</td><td><span class="coverage-badge badge-good" title="Excellent coverage">100.0%</span></td><td class="neutral" title="Previous: 100.0%">&#9679; 0.0%</td></tr>
 
 <tr class="summary-row nosort"><td colspan="2"><strong>Summary</strong></td><td colspan="2">2 files</td><td colspan="3">Avg: 87%, Low: 0</td></tr>
 
 <tr class="med nosort"><td><strong>Total</strong></td><td>82.8</td><td>57.7</td><td>52.4</td><td>100.0</td><td colspan="2"><strong>75.6</strong></td></tr>
 
 </tbody></table>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1em;">
+	<div>
+		<h2>Coverage Trend</h2>
+		<label>
+			<input type="checkbox" id="toggleTrend" checked>
+			Show regression trend
+		</label>
+		<div>
+		</div>
+	</div>
+	<div id="zoomControls" style="margin-top:8px;">
+		<input type="button" value="Refresh" onClick="refresh(this)">
+		<button id="resetZoomBtn" type="button">Reset Zoom</button>
+	</div>
+</div>
+
 <canvas id="coverageTrend" width="600" height="300"></canvas>
 <!-- Zoom controls for the trend chart -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -119,7 +135,7 @@ function linearRegression(data) {
 	}));
 }
 
-const dataPoints = [  ];
+const dataPoints = [ { x: "2025-10-19T18:24:07-04:00", y: 75.5656108597285, delta: 0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/8ded31a", label: "2025-10-19T18:24:07-04:00", pointBackgroundColor: "gray", comment: "Added test dashboard and fuzz testing" } ];
 
 const regressionPoints = linearRegression(dataPoints);
 // Try to register the zoom plugin (handles different UMD builds)
@@ -380,7 +396,7 @@ function refresh(){
 <footer>
 	<p><span style="margin-left:8px;color:#666;font-size:0.9em;">Use mouse wheel or pinch to zoom; drag to pan</span></p>
 	<p>Project: <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup">Genealogy-Obituary-Lookup</a></p>
-	<p><em>Last updated: 2025-10-19 22:28:58 - <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/8ded31a46e4df46f807d8d17f129a9ee955094f6">commit <code>8ded31a</code></a></em></p>
+	<p><em>Last updated: 2025-10-19 22:48:06 - <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/d884e2ef62b177d61490f34492a7d3f32a87848c">commit <code>d884e2e</code></a></em></p>
 </footer>
 </body>
 </html>
