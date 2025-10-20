@@ -36,8 +36,8 @@ jobs:
       - name: Install App::Test::Generator this module's dependencies
         run: |
           cpanm App::Test::Generator
-          find . -name build.log | xargs cat
           cpanm --installdeps .
+          find . -name build.log | xargs cat
 
       - name: Generate fuzz tests
         run: |
