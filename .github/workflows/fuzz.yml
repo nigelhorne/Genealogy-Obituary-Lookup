@@ -39,8 +39,8 @@ jobs:
 
       - name: Install App::Test::Generator this module's dependencies
         run: |
-          cpanm App::Test::Generator || (find . -name build.log | xargs cat)
-          cpanm --installdeps . || (find . -name build.log | xargs cat)
+          cpanm App::Test::Generator
+          cpanm --installdeps .
 
       - name: Make Module
         run: |
@@ -48,7 +48,6 @@ jobs:
           perl Makefile.PL
           make
         env:
-          AUTHOR_TESTING: 1
           AUTOMATED_TESTING: 1
 
       - name: Generate fuzz tests
@@ -62,6 +61,8 @@ jobs:
       - name: Run generated fuzz tests
         run: |
           prove -lr t/fuzz/
+        env:
+          AUTOMATED_TESTING: 1
 
       - name: Show cpanm build log on failure (non-Windows)
         if: runner.os != 'Windows' && failure()
