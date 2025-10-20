@@ -30,14 +30,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -y upgrade
-          sudo apt install libwww-perl
+          sudo apt install libwww-perl libexpat1-dev
         if: runner.os == 'Linux'
+
+      - name: Install Perl dependencies
+        run: |
+          cpanm --notest LWP::UserAgent XML::Parser XML::Twig XML::Simple DBD::XMLSimple Database::Abstraction
 
       - name: Install App::Test::Generator this module's dependencies
         run: |
-          cpanm App::Test::Generator
-          cpanm --installdeps .
-          find . -name build.log | xargs cat
+          cpanm App::Test::Generator || (find . -name build.log | xargs cat)
+          cpanm --installdeps . || (find . -name build.log | xargs cat)
 
       - name: Generate fuzz tests
         run: |
