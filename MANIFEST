@@ -24,6 +24,7 @@ t/critic.t
 t/eof.t
 t/eol.t
 t/fixme.t
+t/fuzz.t
 t/lib/MyLogger.pm
 t/links.t
 t/no404s.t
