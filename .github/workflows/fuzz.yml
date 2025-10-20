@@ -42,6 +42,15 @@ jobs:
           cpanm App::Test::Generator || (find . -name build.log | xargs cat)
           cpanm --installdeps . || (find . -name build.log | xargs cat)
 
+      - name: Make Module
+        run: |
+          # find . -name build.log | xargs cat
+          perl Makefile.PL
+          make
+        env:
+          AUTHOR_TESTING: 1
+          AUTOMATED_TESTING: 1
+
       - name: Generate fuzz tests
         run: |
           mkdir t/fuzz
