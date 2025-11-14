@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 
-use Test::RequiresInternet;
 use Test::Needs 'App::Test::Generator';
 
 use FindBin qw($Bin);
