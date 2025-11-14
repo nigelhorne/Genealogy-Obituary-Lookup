@@ -13,7 +13,7 @@ use Test::Most;
 
 my $dirname = "$Bin/conf";
 
-if((-d $dirname) && opendir(my $dh, $dirname)) {
+if((-r "$Bin/../blib/lib/Genealogy/Obituary/Lookup/data/obituaries.sql") && (-d $dirname) && opendir(my $dh, $dirname)) {
 	while (my $filename = readdir($dh)) {
 		# Skip '.' and '..' entries and vi temporary files
 		next if ($filename eq '.' || $filename eq '..') || ($filename =~ /\.swp$/);
@@ -39,6 +39,8 @@ if((-d $dirname) && opendir(my $dh, $dirname)) {
 		}
 	}
 	closedir($dh);
+} else {
+	diag("Skipping tests: can't find the obituaries.sql file");
 }
 
 done_testing();
