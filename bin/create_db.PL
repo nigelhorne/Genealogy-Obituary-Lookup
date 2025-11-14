@@ -415,7 +415,9 @@ sub freelists($$) {
 		$data = $response->decoded_content();
 	} else {
 		if($response->status_line() ne '404 Not Found') {
-			die "\n$url: ", $response->status_line();
+			if($response->status_line() ne '403 Forbidden') {	# Freelists has started to return this code by mistake
+				die "\n$url: ", $response->status_line();
+			}
 		}
 		return 0;
 	}

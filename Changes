@@ -4,6 +4,7 @@ Revision history for Genealogy::Obituary::Lookup
 	Latest Log::Abstraction uses croak rather than carp on warnings
 	Added Testing Dashboard
 	Added Fuzz Testing
+	Freelists has started to return 403 instead of 404 on unfound pages
 
 0.20	Sat Sep 20 16:13:10 EDT 2025
 	Handle the location "St. Augustine's"
