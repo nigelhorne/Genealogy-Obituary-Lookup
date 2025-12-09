@@ -35,6 +35,9 @@ if((-r "$Bin/../blib/lib/Genealogy/Obituary/Lookup/data/obituaries.sql") && (-d 
 				}
 			} else {
 				diag("$filepath: STDOUT:\n$stdout");
+				diag($stderr) if(length($stderr));
+				diag("$filepath Failed");
+				last;
 			}
 			diag($stderr) if(length($stderr));
 		}

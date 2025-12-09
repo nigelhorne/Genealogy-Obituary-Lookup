@@ -4,6 +4,9 @@
 module: Genealogy::Obituary::Lookup
 function: search
 
+config:
+  test_nuls: off
+
 new:
 
 input:
