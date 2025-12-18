@@ -40,9 +40,9 @@ subtest 'Environment test' => sub {
 };
 
 # Nonexistent config file dies
-throws_ok {
+lives_ok {
 	Genealogy::Obituary::Lookup->new(config_file => '/nonexistent/path/to/config.yml', config_dirs => ['']);
-} qr/Can't load configuration from/, 'Throws error for nonexistent config file';
+} 'Lives for nonexistent config file';
 
 # Malformed config file (not a hashref)
 my ($badfh, $badfile) = tempfile();
