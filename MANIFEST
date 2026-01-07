@@ -4,7 +4,6 @@ bin/extract
 bin/ml_from_cache
 Changes
 config.yaml
-cpanfile
 lib/Genealogy/Obituary/Lookup.pm
 lib/Genealogy/Obituary/Lookup/obituaries.pm
 LICENSE
