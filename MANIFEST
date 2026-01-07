@@ -4,6 +4,7 @@ bin/extract
 bin/ml_from_cache
 Changes
 config.yaml
+cpanfile
 lib/Genealogy/Obituary/Lookup.pm
 lib/Genealogy/Obituary/Lookup/obituaries.pm
 LICENSE
@@ -17,6 +18,7 @@ t/10-new.t
 t/30-basics.t
 t/carp.t
 t/comment-spelling.t
+t/conf/new.yml
 t/conf/search.yml
 t/config_file.t
 t/coverage.t

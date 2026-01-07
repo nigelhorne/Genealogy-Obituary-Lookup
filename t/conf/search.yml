@@ -1,11 +1,15 @@
 ---
-# Pass through App::Test::Generator/fuzz-harness-generator
+# Run: fuzz-harness-generator -r t/conf/search.yml
 
 module: Genealogy::Obituary::Lookup
 function: search
 
 config:
-  test_nuls: off
+  dedup: 1
+  test_empty: 1
+  test_non_ascii: 0
+  test_nuls: 0
+  test_undef: 0
 
 new:
 
@@ -30,3 +34,6 @@ input:
     optional: true
     min: 0
     max: 120
+
+output:
+  type: hashref

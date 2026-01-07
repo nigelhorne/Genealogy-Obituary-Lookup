@@ -1,4 +1,4 @@
-# Generated from Makefile.PL
+# Generated from Makefile.PL using makefilepl2cpanfile
 
 requires 'perl', '5.6.2';
 
