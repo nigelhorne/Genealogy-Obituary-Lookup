@@ -576,7 +576,7 @@ sub funeral_notices
 		queue($first, $last, $maiden, $age, $place, $date, $newspaper, 'L', $url) if($last =~ /^[A-Z]/);
 		# print Data::Dumper->new([\@queue])->Dump();
 	} elsif($content !~ /By request this notice has been.+removed from our site/is) {
-		die "Can't parse $url";
+		die "Can't parse $url (real_last = $real_last)";
 	}
 }
 
