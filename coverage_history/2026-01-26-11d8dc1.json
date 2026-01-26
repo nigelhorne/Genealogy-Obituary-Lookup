@@ -1,0 +1,498 @@
+{
+   "runs" : [
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439756.33803,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439756.33773,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439756.50613,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439756.50593,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439756.68548,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439756.68515,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439756.85397,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439756.85364,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439757.01846,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439757.01824,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439757.18273,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439757.18252,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439757.34893,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439757.34873,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439757.5132,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439757.51299,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439757.69435,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439757.68584,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439765.66415,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439757.89232,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439758.03846,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "-e",
+         "start" : 1769439758.03836,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439758.3988,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/00-load.t",
+         "start" : 1769439758.39761,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439758.81158,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/10-new.t",
+         "start" : 1769439758.71159,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439759.28441,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/30-basics.t",
+         "start" : 1769439759.25077,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439759.74163,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/carp.t",
+         "start" : 1769439759.7374,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439760.04488,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/comment-spelling.t",
+         "start" : 1769439760.04468,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439760.42488,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/config_file.t",
+         "start" : 1769439760.31096,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439760.73429,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/coverage.t",
+         "start" : 1769439760.73405,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439760.96966,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/critic.t",
+         "start" : 1769439760.96943,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439761.20543,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/eof.t",
+         "start" : 1769439761.2052,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439761.44209,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/eol.t",
+         "start" : 1769439761.44185,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439761.67855,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/fixme.t",
+         "start" : 1769439761.6783,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439761.86134,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/fuzz.t",
+         "start" : 1769439761.86131,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439762.08027,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/links.t",
+         "start" : 1769439762.08007,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439762.31417,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/no404s.t",
+         "start" : 1769439762.31396,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439762.54983,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/noopentickets.t",
+         "start" : 1769439762.5496,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439762.78701,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/noplan.t",
+         "start" : 1769439762.78675,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439763.35262,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/obituaries.t",
+         "start" : 1769439763.34683,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439763.73586,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/pod-cm.t",
+         "start" : 1769439763.73513,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439763.97614,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/pod-snippets.t",
+         "start" : 1769439763.97591,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439764.21071,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/pod-spelling.t",
+         "start" : 1769439764.21046,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439764.44688,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/pod-synopsis.t",
+         "start" : 1769439764.44667,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439764.68243,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/pod.t",
+         "start" : 1769439764.6822,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439764.91973,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/strict.t",
+         "start" : 1769439764.9195,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439765.15664,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/unused.t",
+         "start" : 1769439765.15641,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439765.39091,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/vars.t",
+         "start" : 1769439765.3907,
+         "version" : "0.20"
+      },
+      {
+         "OS" : "linux",
+         "abstract" : "Lookup an obituary",
+         "dir" : "/home/runner/work/Genealogy-Obituary-Lookup/Genealogy-Obituary-Lookup",
+         "finish" : 1769439765.6259,
+         "name" : "Genealogy-Obituary-Lookup",
+         "perl" : "5.40.3",
+         "run" : "t/version.t",
+         "start" : 1769439765.62569,
+         "version" : "0.20"
+      }
+   ],
+   "summary" : {
+      "Total" : {
+         "branch" : {
+            "covered" : 30,
+            "error" : 22,
+            "percentage" : 57.6923076923077,
+            "total" : 52,
+            "uncoverable" : 0
+         },
+         "condition" : {
+            "covered" : 11,
+            "error" : 10,
+            "percentage" : 52.3809523809524,
+            "total" : 21,
+            "uncoverable" : 0
+         },
+         "statement" : {
+            "covered" : 106,
+            "error" : 22,
+            "percentage" : 82.8125,
+            "total" : 128
+         },
+         "subroutine" : {
+            "covered" : 20,
+            "percentage" : 100,
+            "total" : 20
+         },
+         "total" : {
+            "covered" : 167,
+            "error" : 54,
+            "percentage" : 75.5656108597285,
+            "total" : 221,
+            "uncoverable" : 0
+         }
+      },
+      "blib/lib/Genealogy/Obituary/Lookup.pm" : {
+         "branch" : {
+            "covered" : 30,
+            "error" : 22,
+            "percentage" : 57.6923076923077,
+            "total" : 52,
+            "uncoverable" : 0
+         },
+         "condition" : {
+            "covered" : 11,
+            "error" : 10,
+            "percentage" : 52.3809523809524,
+            "total" : 21,
+            "uncoverable" : 0
+         },
+         "statement" : {
+            "covered" : 97,
+            "error" : 22,
+            "percentage" : 81.5126050420168,
+            "total" : 119
+         },
+         "subroutine" : {
+            "covered" : 17,
+            "percentage" : 100,
+            "total" : 17
+         },
+         "total" : {
+            "covered" : 155,
+            "error" : 54,
+            "percentage" : 74.1626794258373,
+            "total" : 209,
+            "uncoverable" : 0
+         }
+      },
+      "blib/lib/Genealogy/Obituary/Lookup/obituaries.pm" : {
+         "statement" : {
+            "covered" : 9,
+            "percentage" : 100,
+            "total" : 9
+         },
+         "subroutine" : {
+            "covered" : 3,
+            "percentage" : 100,
+            "total" : 3
+         },
+         "total" : {
+            "covered" : 12,
+            "percentage" : 100,
+            "total" : 12
+         }
+      }
+   }
+}
