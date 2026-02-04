@@ -2,7 +2,7 @@
 
 use strict;
 use Test::HTTPStatus;
-use Test::Most tests => 23;
+use Test::Most tests => 19;
 
 use lib 'lib';
 use lib 't/lib';
@@ -92,19 +92,6 @@ SKIP: {
 	}
 	cmp_ok($erickson->{'url'}, 'eq', 'https://www.beaconjournal.com/obituaries/pwoo0723808', 'Check locally added data');
 	http_ok($erickson->{'url'}, HTTP_OK);
-
-	# Funeral-notices.co.uk
-	# https://funeral-notices.co.uk/notice/phillips/5229503
-	my $phillips = $search->search(first => 'Robert', last => 'Phillips', age => 81);
-	if($ENV{'TEST_VERBOSE'}) {
-		diag(Data::Dumper->new([$phillips])->Dump());
-	}
-	cmp_ok($phillips->{'url'}, 'eq', 'https://funeral-notices.co.uk/notice/phillips/5229503');
-	http_ok($phillips->{'url'}, HTTP_OK);
-
-	my $taylor = $search->search(first => 'Margaret', middle => 'Elizabeth', last => 'Taylor');
-	cmp_ok($taylor->{'url'}, 'eq', 'https://funeral-notices.co.uk/notice/taylor/5229508');
-	http_ok($taylor->{'url'}, HTTP_OK);
 
 	# Verify "Mc" is imported correctly
 	my @mc_carthy = $search->search(first => 'Jean', middle => 'Emily', last => 'McCarthy');

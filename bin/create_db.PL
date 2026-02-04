@@ -3,6 +3,7 @@
 # Create SQLite3 from https://sites.rootsweb.com/~obituary/,
 #	https://mlarchives.rootsweb.com/listindexes/emails?listname=gen-obit and
 #	https://www.funeral-notices.co.uk
+#	https://www.freelists.org/post/obitdailytimes/Obituary-Daily-Times-v31no001 (etc)
 #
 # -f:	force a build, otherwise it won't build on CPAN smokers or if the
 #	database is less than a day old
@@ -92,7 +93,7 @@ print "This will take some time. It'd be best to go and make yourself a cup of t
 my $ua = $force_flag ? LWP::UserAgent->new(timeout => 60, keep_alive => 1) : LWP::UserAgent::WithCache->new(timeout => 60, keep_alive => 1);
 # my $ua = LWP::UserAgent->new(timeout => 60, keep_alive => 1);
 $ua->env_proxy(1);
-$ua->agent('Mozilla/5.0');
+$ua->agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36');
 $ua->conn_cache()->total_capacity(undef);
 $Lingua::EN::NameCase::POSTNOMINAL = 0;
 
@@ -178,7 +179,7 @@ while(freelists($ua, 'v26no' . sprintf('%03d', $issue))) {
 
 flush($dbh);
 
-foreach my $volume(27, 28, 29, 30) {
+foreach my $volume(27, 28, 29, 30, 31) {
 	$issue = 1;
 	while(freelists($ua, "v${volume}no" . sprintf('%03d', $issue))) {
 		flush($dbh) if(scalar(@queue) > 10_000);
@@ -567,6 +568,7 @@ sub funeral_notices
 			die "Can't find publisher in $url";
 		}
 		$newspaper =~ s/\.$//;
+		$newspaper =~ s/\s*<span.+<\/span>//;
 		if($content =~ /Published: <\/span><span>([\d\/]+)/s) {
 			$date = $1;
 		} else {
