@@ -39,7 +39,7 @@
 		td.positive { color: green; font-weight: bold; }
 		td.negative { color: red; font-weight: bold; }
 		td.neutral { color: gray; }
-		// Show cursor points on the headers to show that they are clickable
+		/* Show cursor points on the headers to show that they are clickable */
 		th { background-color: #f2f2f2; cursor: pointer; }
 		th.sortable {
 			cursor: pointer;
@@ -58,6 +58,75 @@
 			display: inline-block;
 			vertical-align: middle;
 		}
+		tr.cpan-fail td {
+			background-color: #fdd;
+		}
+		tr.cpan-unknown td {
+			background-color: #eee;
+			color: #666;
+		}
+		tr.cpan-na td {
+			background-color: #ffffde;
+			color: #666;
+		}
+		.new-failure {
+			background: #c00;
+			color: #fff;
+			font-weight: bold;
+			padding: 2px 6px;
+			border-radius: 4px;
+			font-size: 0.85em;
+		}
+		.notice {
+			padding: 8px 12px;
+			margin: 10px 0;
+			border-radius: 4px;
+			font-size: 0.95em;
+		}
+		.notice strong {
+			font-weight: bold;
+		}
+		.notice.perl-version-cliff {
+			background-color: #fff3cd; /* soft amber */
+			border: 1px solid #ffeeba;
+			color: #856404;
+		}
+		.notice.perl-version-cliff a {
+			color: #533f03;
+			text-decoration: underline;
+		}
+		.notice.perl-version-cliff a:hover {
+			text-decoration: none;
+		}
+		.notice.locale-cliff {
+			border-left: 4px solid #d97706;
+			background: #fffbeb;
+			padding: 0.5em 1em;
+		}
+		.notice.rt-issues {
+			background: #fff6e5;
+			border-left: 4px solid #d9822b;
+		}
+		table.root-causes {
+			border-collapse: collapse;
+			width: 100%;
+			margin-bottom: 1.5em;
+		}
+		table.root-causes th,
+		table.root-causes td {
+			border: 1px solid #ccc;
+			padding: 8px;
+			vertical-align: top;
+		}
+		table.root-causes tr.high {
+			background-color: #dfd;
+		}
+		table.root-causes tr.med {
+			background-color: #ffd;
+		}
+		table.root-causes tr.low {
+			background-color: #fdd;
+		}
 	</style>
 </head>
 <body>
@@ -72,26 +141,22 @@
 <!-- Make the column headers clickable -->
 <thead>
 <tr>
-	<th class="sortable" onclick="sortTable(0)"><span class="label">File</span> <span class="arrow active">&#x25B2;</span></th>
-	<th class="sortable" onclick="sortTable(1)"><span class="label">Stmt</span> <span class="arrow">&#x25B2;</span></th>
-	<th class="sortable" onclick="sortTable(2)"><span class="label">Branch</span> <span class="arrow">&#x25B2;</span></th>
-	<th class="sortable" onclick="sortTable(3)"><span class="label">Cond</span> <span class="arrow">&#x25B2;</span></th>
-	<th class="sortable" onclick="sortTable(4)"><span class="label">Sub</span> <span class="arrow">&#x25B2;</span></th>
-	<th class="sortable" onclick="sortTable(5)"><span class="label">Total</span> <span class="arrow">&#x25B2;</span></th>
-	<th class="sortable" onclick="sortTable(6)"><span class="label">&Delta;</span> <span class="arrow">&#x25B2;</span></th>
+	<th class="sortable" onclick="sortTable(this, 0)"><span class="label">File</span> <span class="arrow active">&#x25B2;</span></th>
+	<th class="sortable" onclick="sortTable(this, 1)"><span class="label">Stmt</span> <span class="arrow">&#x25B2;</span></th>
+	<th class="sortable" onclick="sortTable(this, 2)"><span class="label">Branch</span> <span class="arrow">&#x25B2;</span></th>
+	<th class="sortable" onclick="sortTable(this, 3)"><span class="label">Cond</span> <span class="arrow">&#x25B2;</span></th>
+	<th class="sortable" onclick="sortTable(this, 4)"><span class="label">Sub</span> <span class="arrow">&#x25B2;</span></th>
+	<th class="sortable" onclick="sortTable(this, 5)"><span class="label">Total</span> <span class="arrow">&#x25B2;</span></th>
+	<th class="sortable" onclick="sortTable(this, 6)"><span class="label">&Delta;</span> <span class="arrow">&#x25B2;</span></th>
 </tr>
 </thead>
 
 <tbody>
 
-<tr class="med"><td><a href="blib-lib-Genealogy-Obituary-Lookup-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/4443b83faa8e577fa20051c109b27ca4b42198d7/blib/lib/Genealogy/Obituary/Lookup.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2"></canvas></td><td>81.5</td><td>57.7</td><td>52.4</td><td>100.0</td><td><span class="coverage-badge badge-warn" title="Moderate coverage">74.2%</span></td><td class="neutral" title="Previous: 74.2%">&#9679; 0.0%</td></tr>
-
-<tr class="high"><td><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup/obituaries.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/4443b83faa8e577fa20051c109b27ca4b42198d7/blib/lib/Genealogy/Obituary/Lookup/obituaries.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0"></canvas></td><td>100.0</td><td>0.0</td><td>0.0</td><td>100.0</td><td><span class="coverage-badge badge-good" title="Excellent coverage">100.0%</span></td><td class="neutral" title="Previous: 100.0%">&#9679; 0.0%</td></tr>
-
+<tr class="med"><td><a href="blib-lib-Genealogy-Obituary-Lookup-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/0ef16e92297600269fa606bff0ad0a4862337c44/blib/lib/Genealogy/Obituary/Lookup.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2"></canvas></td><td>81.5</td><td>57.7</td><td>52.4</td><td>100.0</td><td><span class="coverage-badge badge-warn" title="Moderate coverage">74.2%</span></td><td class="neutral" title="Previous: 74.2%">&#9679; 0.0%</td></tr>
+<tr class="high"><td><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup/obituaries.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/0ef16e92297600269fa606bff0ad0a4862337c44/blib/lib/Genealogy/Obituary/Lookup/obituaries.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0"></canvas></td><td>100.0</td><td>0.0</td><td>0.0</td><td>100.0</td><td><span class="coverage-badge badge-good" title="Excellent coverage">100.0%</span></td><td class="neutral" title="Previous: 100.0%">&#9679; 0.0%</td></tr>
 <tr class="summary-row nosort"><td colspan="2"><strong>Summary</strong></td><td colspan="2">2 files</td><td colspan="3">Avg: 87%, Low: 0</td></tr>
-
 <tr class="med nosort"><td><strong>Total</strong></td><td>82.8</td><td>57.7</td><td>52.4</td><td>100.0</td><td colspan="2"><strong>75.6</strong></td></tr>
-
 </tbody></table>
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1em;">
 	<div>
@@ -126,6 +191,9 @@ function linearRegression(data) {
 	const sumXY = xs.reduce((acc, val, i) => acc + val * ys[i], 0);
 	const sumX2 = xs.reduce((acc, val) => acc + val * val, 0);
 
+	if (n < 2 || (n * sumX2 - sumX * sumX) === 0) {
+		return [];
+	}
 	const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
 	const intercept = (sumY - slope * sumX) / n;
 
@@ -135,8 +203,7 @@ function linearRegression(data) {
 	}));
 }
 
-const dataPoints = [ { x: "2025-10-19T18:24:07-04:00", y: 75.5656108597285, delta: 0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/8ded31a", label: "2025-10-19T18:24:07-04:00", pointBackgroundColor: "gray", comment: "Added test dashboard and fuzz testing" },
-{ x: "2025-10-19T20:33:41-04:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/d1188b1", label: "2025-10-19T20:33:41-04:00", pointBackgroundColor: "gray", comment: "Debug Actions" },
+const dataPoints = [ { x: "2025-10-19T20:33:41-04:00", y: 75.5656108597285, delta: 0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/d1188b1", label: "2025-10-19T20:33:41-04:00", pointBackgroundColor: "gray", comment: "Debug Actions" },
 { x: "2025-10-19T21:03:22-04:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/e286eb0", label: "2025-10-19T21:03:22-04:00", pointBackgroundColor: "gray", comment: "Debug Actions" },
 { x: "2025-11-14T13:19:02-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/9afe386", label: "2025-11-14T13:19:02-05:00", pointBackgroundColor: "gray", comment: "No need for requires internet in fuzz" },
 { x: "2025-11-28T13:55:36-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/7279e86", label: "2025-11-28T13:55:36-05:00", pointBackgroundColor: "gray", comment: "Use Test::Which" },
@@ -144,7 +211,8 @@ const dataPoints = [ { x: "2025-10-19T18:24:07-04:00", y: 75.5656108597285, delt
 { x: "2025-12-18T16:32:19-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/c8b4973", label: "2025-12-18T16:32:19-05:00", pointBackgroundColor: "gray", comment: "Latest config code" },
 { x: "2026-01-03T11:49:00-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/9e116c5", label: "2026-01-03T11:49:00-05:00", pointBackgroundColor: "gray", comment: "Added ghgen workflow" },
 { x: "2026-01-07T11:26:23-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/0557eca", label: "2026-01-07T11:26:23-05:00", pointBackgroundColor: "gray", comment: "Added mailutils for fuzz testing" },
-{ x: "2026-01-26T09:59:04-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/11d8dc1", label: "2026-01-26T09:59:04-05:00", pointBackgroundColor: "gray", comment: "More helpful error message" } ];
+{ x: "2026-01-26T09:59:04-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/11d8dc1", label: "2026-01-26T09:59:04-05:00", pointBackgroundColor: "gray", comment: "More helpful error message" },
+{ x: "2026-02-16T08:50:07-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/4443b83", label: "2026-02-16T08:50:07-05:00", pointBackgroundColor: "gray", comment: "Fix CI" } ];
 
 const regressionPoints = linearRegression(dataPoints);
 // Try to register the zoom plugin (handles different UMD builds)
@@ -268,35 +336,30 @@ if (resetBtn) {
 	});
 }
 
-function sortTable(n) {
-	const table = document.querySelector("table");
-	if (!table || !table.tBodies || !table.tBodies[0]) return;
+function sortTable(th, colIndex) {
+	const table = th.closest("table");
+	if (!table || !table.tBodies.length) return;
 
-	// All rows in tbody
-	const allBodyRows = Array.from(table.tBodies[0].rows);
+	const tbody = table.tBodies[0];
+	const rows = Array.from(tbody.rows);
 
-	// Separate normal (sortable) rows and fixed (nosort) rows.
-	const normalRows = allBodyRows.filter(r => !r.classList.contains("nosort"));
-	const fixedRows = allBodyRows.filter(r => r.classList.contains("nosort"));
-
-	// Decide numeric vs text column (column 0 = File => text)
-	const isNumeric = n > 0;
-
-	// Determine ascending/descending toggle logic
 	const prevCol = table.getAttribute("data-sort-col");
 	const prevOrder = table.getAttribute("data-sort-order") || "desc";
-	const asc = (prevCol != n) ? true : (prevOrder === "desc");
+	const asc = (prevCol != colIndex) ? true : (prevOrder === "desc");
+
+	const isNumeric = colIndex === 0; // Date column
+
+	const normalRows = rows.filter(r => !r.classList.contains("nosort"));
+	const fixedRows = rows.filter(r => r.classList.contains("nosort"));
 
 	normalRows.sort((a, b) => {
-		let x = (a.cells[n] && a.cells[n].innerText) ? a.cells[n].innerText.trim() : "";
-		let y = (b.cells[n] && b.cells[n].innerText) ? b.cells[n].innerText.trim() : "";
+		let x = a.cells[colIndex]?.innerText.trim() || "";
+		let y = b.cells[colIndex]?.innerText.trim() || "";
 
 		if (isNumeric) {
-			// Remove non-number characters (arrows, percent signs, bullets, etc.)
-			x = parseFloat(x.replace(/[^0-9.\-+eE]/g, '')) || 0;
-			y = parseFloat(y.replace(/[^0-9.\-+eE]/g, '')) || 0;
+			x = Date.parse(x) || 0;
+			y = Date.parse(y) || 0;
 		} else {
-			// Text compare (case-insensitive)
 			x = x.toLowerCase();
 			y = y.toLowerCase();
 		}
@@ -306,30 +369,28 @@ function sortTable(n) {
 		return 0;
 	});
 
-	// Reattach rows: sorted normalRows first, then fixedRows (keeps summary/total last)
-	normalRows.forEach(r => table.tBodies[0].appendChild(r));
-	fixedRows.forEach(r => table.tBodies[0].appendChild(r));
+	normalRows.forEach(r => tbody.appendChild(r));
+	fixedRows.forEach(r => tbody.appendChild(r));
 
-	// Update header arrows
+	// Update arrows
 	const headers = table.tHead.rows[0].cells;
 	for (let i = 0; i < headers.length; i++) {
 		const arrow = headers[i].querySelector(".arrow");
 		if (!arrow) continue;
-		if (i === n) {
-			// active column: bold arrow, direction ▲ or ▼
+
+		if (i === colIndex) {
 			arrow.textContent = asc ? "▲" : "▼";
 			arrow.classList.add("active");
 		} else {
-			// inactive column: always ▲, dimmed
 			arrow.textContent = "▲";
 			arrow.classList.remove("active");
 		}
 	}
 
-	// Remember state (so clicking same column toggles)
-	table.setAttribute("data-sort-col", n);
+	table.setAttribute("data-sort-col", colIndex);
 	table.setAttribute("data-sort-order", asc ? "asc" : "desc");
 }
+
 
 // Initial display.
 // The table has been set up sorted in ascending order on the filename; reflect that in the GUI
@@ -402,10 +463,180 @@ function refresh(){
 }
 </script>
 
+<p><center>Use mouse wheel or pinch to zoom; drag to pan</center></p>
+<p>No issues active on <a href="https://rt.cpan.org/Public/Dist/Display.html?Name=Genealogy-Obituary-Lookup">RT</a></p>
+<h2>CPAN Testers Failures for Genealogy-Obituary-Lookup 0.20</h2>
+<h3>Failure Summary</h3>
+<ul>
+<li><b>Perl 5.38.x</b>: 5 failures</li>
+<li><b>linux</b>: 25 failures</li>
+<li><b>5.38 / linux</b>: 5 failures</li>
+</ul>
+<h3>Likely Root Causes</h3>
+<table class="root-causes">
+<thead>
+<tr>
+	<th>Cause</th>
+	<th>Confidence</th>
+	<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+
+<tr class="high">
+	<td halign="center"><strong>OS-specific behavior (linux)</strong></td>
+	<td halign="center">Strong (93%)</td>
+	<td halign="center"><ul><li>25/27 failures on linux</li><li>Passes observed on other operating systems</li></ul></td>
+</tr>
+
+</tbody>
+</table>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+	const toggleFail = document.getElementById('toggleFail');
+	const toggleUnknown = document.getElementById('toggleUnknown');
+	const toggleNA = document.getElementById('toggleNA');
+	const toggleNew = document.getElementById('toggleNew');
+
+	function update() {
+		document.querySelectorAll('tr').forEach(row => {
+			// Skip header rows
+			if (row.querySelector('th')) return;
+
+			// Determine row status
+			const isFail = row.classList.contains('cpan-fail');
+			const isUnknown = row.classList.contains('cpan-unknown');
+			const isNA = row.classList.contains('cpan-na');
+			const isNew = !!row.querySelector('.new-failure');
+
+			// Decide whether to show the row
+			let show = true;
+
+			if (toggleFail && !toggleFail.checked && isFail) show = false;
+			if (toggleUnknown && !toggleUnknown.checked && isUnknown) show = false;
+			if (toggleNA && !toggleNA.checked && isNA) show = false;
+			if (toggleNew && toggleNew.checked && !isNew) show = false;
+
+			row.style.display = show ? '' : 'none';
+		});
+	}
+
+	[toggleFail, toggleUnknown, toggleNA, toggleNew].forEach(cb => {
+		if (cb) cb.addEventListener('change', update);
+	});
+
+	update();
+});
+document.addEventListener("DOMContentLoaded", () => {
+	const th = document.querySelector("table.sortable-table th");
+	if (th) sortTable(th, 0);
+});
+</script>
+
+<p><em>Showing one failure per OS/Perl combination.</em></p>
+<div style="margin-bottom: 0.5em;">
+	<label>
+		<input type="checkbox" id="toggleFail" checked>
+		FAIL
+	</label>
+	<label style="margin-left: 1em;">
+		<input type="checkbox" id="toggleUnknown">
+		UNKNOWN
+	</label>
+	<label style="margin-left: 1em;">
+		<input type="checkbox" id="toggleNA">
+		NA
+	</label>
+	<label style="margin-left: 1em;">
+	<label style="margin-left: 1em;">
+		<input type="checkbox" id="toggleNew">
+		NEW only
+	</label>
+</div>
+
+<table class="sortable-table" data-sort-col="0" data-sort-order="asc">
+<thead>
+<tr>
+	<th class="sortable" onclick="sortTable(this, 0)">
+		<span class="label">Date</span> <span class="arrow">&#x25B2;</span>
+	</th>
+	<th class="sortable" onclick="sortTable(this, 1)">
+		<span class="label">OS</span> <span class="arrow">&#x25B2;</span>
+	</th>
+	<th class="sortable" onclick="sortTable(this, 2)">
+		<span class="label">Perl</span> <span class="arrow">&#x25B2;</span>
+	</th>
+	<th class="sortable" onclick="sortTable(this, 3)">
+		<span class="label">Reporter</span> <span class="arrow">&#x25B2;</span>
+	</th>
+	<th class="sortable" onclick="sortTable(this, 4)" title="Marks failures that did not occur in the previous release. The same OS, Perl version, architecture, and platform were passing before.">
+		<span class="label">New</span> <span class="arrow">&#x25B2;</span>
+	</th>
+	<th>Report</th>
+</tr>
+</thead>
+<tbody>
+
+<tr class="cpan-fail"><td>2025-09-21T05:42:00Z</td><td>linux</td><td>5.36.3</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/be883d18-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:10:00Z</td><td>linux</td><td>5.28.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/95ba8f40-9698-11f0-b6ba-9b5fbb94b6c5" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-25T05:48:00Z</td><td>freebsd</td><td>5.42.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/382a7406-99d3-11f0-a85a-1b106e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-27T18:36:00Z</td><td>linux</td><td>5.34.1</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/eb644778-9bd0-11f0-b74a-57296e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:40:00Z</td><td>linux</td><td>5.40.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/8baca21c-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:33:00Z</td><td>linux</td><td>5.38.4</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/650fd53a-9693-11f0-8bb6-d6db95b5b7ae" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:02:00Z</td><td>linux</td><td>5.34.0</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/5b0a0ad4-9697-11f0-8d8e-c00c737033d0" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:42:00Z</td><td>linux</td><td>5.38.4</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/b4d47868-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:07:00Z</td><td>linux</td><td>5.28.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/14fb96ec-9698-11f0-968e-f8fd9fef238b" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-23T18:05:00Z</td><td>linux</td><td>5.40.0</td><td>Nigel Horne</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/dcfaa82a-98a7-11f0-9665-9d6c66977ba7" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.42.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/9d81c54e-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:44:00Z</td><td>linux</td><td>5.40.1</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/e0ed6d6a-9694-11f0-9697-a34a7951c4f2" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.42.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/af5a44a8-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.32.1</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a9dd8666-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-12-29T16:53:00Z</td><td>linux</td><td>5.43.6</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/eafd50aa-e4d6-11f0-b781-90ed3920828c" target="_blank">View</a></td></tr>
+<tr class="cpan-unknown"><td>2026-01-26T14:35:00Z</td><td>darwin</td><td>5.42.0</td><td>Nigel Horne</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/4bc84c8e-fac4-11f0-872d-cd71f0c5ed8f" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:21:00Z</td><td>linux</td><td>5.20.2</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/097efff0-969a-11f0-bccb-f8de635dc590" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:04:00Z</td><td>linux</td><td>5.32.1</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a4067eca-9697-11f0-a87f-ed2ddde4e16c" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-27T18:37:00Z</td><td>linux</td><td>5.36.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/f547d7f0-9bd0-11f0-b74a-57296e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:59:00Z</td><td>linux</td><td>5.36.1</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/f5c657fe-9696-11f0-9610-8a4ec46c134a" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:40:00Z</td><td>linux</td><td>5.38.2</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/8621656c-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.24.4</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a5b13f9c-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2026-02-12T06:54:00Z</td><td>linux</td><td>5.43.7</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/b850b9ea-07df-11f1-aa21-b05cca3cc33a" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:41:00Z</td><td>linux</td><td>5.38.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/6ccc582e-9694-11f0-b74a-cff126171618" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.36.3</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/95011c62-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:42:00Z</td><td>linux</td><td>5.38.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a4f1211c-9694-11f0-a09b-ef6ca43470a6" target="_blank">View</a></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:38:00Z</td><td>linux</td><td>5.40.2</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/0215f0f8-9694-11f0-8431-809d8b36324e" target="_blank">View</a></td></tr>
+</tbody></table>
 <footer>
-	<p><span style="margin-left:8px;color:#666;font-size:0.9em;">Use mouse wheel or pinch to zoom; drag to pan</span></p>
 	<p>Project: <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup">Genealogy-Obituary-Lookup</a></p>
-	<p><em>Last updated: 2026-02-16 13:53:31 - <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/4443b83faa8e577fa20051c109b27ca4b42198d7">commit <code>4443b83</code></a></em></p>
+	<p><em>Last updated: 2026-02-16 14:03:24 - <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/0ef16e92297600269fa606bff0ad0a4862337c44">commit <code>0ef16e9</code></a></em></p>
 </footer>
+
 </body>
 </html>
