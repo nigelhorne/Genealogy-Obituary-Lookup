@@ -69,7 +69,7 @@ Supports two return modes:
     Returns a single hash reference,
     or `undef` if there is no match.
 
-### FORMAL SPECIFICATION
+### API SPECIFICATION
 
 #### INPUT
 
@@ -118,7 +118,7 @@ List context:
 
 # AUTHOR
 
-Nigel Horne, `<njh at bandsman.co.uk>`
+Nigel Horne, `<njh at nigelhorne.com>`
 
 # BUGS
 
@@ -129,6 +129,7 @@ The first 18 pages are on Wayback machine, but the rest is lost.
 
 [Database::Abstraction](https://metacpan.org/pod/Database%3A%3AAbstraction)
 
+- [Test Dashboard](https://nigelhorne.github.io/Genealogy-Obituary-Lookup/coverage/)
 - The Obituary Daily Times
 
     [https://sites.rootsweb.com/~obituary/](https://sites.rootsweb.com/~obituary/)
@@ -148,6 +149,8 @@ The first 18 pages are on Wayback machine, but the rest is lost.
 - Older data
 
     [https://obituaries.rootsweb.com/obits/searchObits](https://obituaries.rootsweb.com/obits/searchObits)
+
+- Test coverage report: [https://nigelhorne.github.io/Genealogy-Obituary-Lookup/coverage/](https://nigelhorne.github.io/Genealogy-Obituary-Lookup/coverage/)
 
 # SUPPORT
 
@@ -177,6 +180,6 @@ You can also look for information at:
 
 # LICENSE AND COPYRIGHT
 
-Copyright 2020-2025 Nigel Horne.
+Copyright 2020-2026 Nigel Horne.
 
 This program is released under the following licence: GPL2

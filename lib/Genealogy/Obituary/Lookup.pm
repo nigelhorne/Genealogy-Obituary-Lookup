@@ -330,6 +330,8 @@ L<Database::Abstraction>
 
 =over 4
 
+=item * L<Test Dashboard|https://nigelhorne.github.io/Genealogy-Obituary-Lookup/coverage/>
+
 =item * The Obituary Daily Times
 
 L<https://sites.rootsweb.com/~obituary/>
