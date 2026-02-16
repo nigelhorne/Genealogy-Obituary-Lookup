@@ -3,9 +3,11 @@
 use strict;
 use warnings;
 
+use Errno qw(ENOENT);
 use Test::Most;
 use File::Spec;
 use File::Temp qw/tempfile tempdir/;
+use POSIX qw(strerror);	# Import the strerror function
 use YAML::XS qw/DumpFile/;
 
 use_ok('Genealogy::Obituary::Lookup');
@@ -40,9 +42,10 @@ subtest 'Environment test' => sub {
 };
 
 # Nonexistent config file dies
-lives_ok {
-	Genealogy::Obituary::Lookup->new(config_file => '/nonexistent/path/to/config.yml', config_dirs => ['']);
-} 'Lives for nonexistent config file';
+my $mess = strerror(ENOENT);
+throws_ok {
+	Genealogy::Obituary::Lookup->new(config_file => '/nonexistent/path/to/config.yml');
+} qr/\Q$mess\E/, 'Dies with non-existent config file';
 
 # Malformed config file (not a hashref)
 my ($badfh, $badfile) = tempfile();

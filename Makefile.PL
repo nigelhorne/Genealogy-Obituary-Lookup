@@ -97,9 +97,11 @@ WriteMakefile(
 	CONFIGURE_REQUIRES => {
 		'ExtUtils::MakeMaker' => 6.64,	# Minimum version for TEST_REQUIRES
 	}, TEST_REQUIRES => {
+		'Errno' => 0,
 		'Database::Abstraction' => 0,
 		'FindBin' => 0,
 		'File::Temp' => 0,
+		'POSIX' => 0,
 		'Test::Carp' => 0,
 		'Test::DescribeMe' => 0,
 		'Test::HTTPStatus' => 0,

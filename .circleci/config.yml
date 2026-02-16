@@ -37,11 +37,13 @@ jobs:
           environment:
             # PATH: ~/perl5/bin:/bin:/usr/bin
             AUTOMATED_TESTING: 1
+            NO_NETWORK_TESTING: 1
       - run:
           name: Run tests
           environment:
             # PATH: ~/perl5/bin:/bin:/usr/bin
             AUTOMATED_TESTING: 1
+            NO_NETWORK_TESTING: 1
           # command: echo 'replace me with real tests!' && false
           command: |
             make test
