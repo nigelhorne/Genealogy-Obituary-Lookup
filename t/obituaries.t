@@ -11,7 +11,7 @@ use MyLogger;
 BEGIN { use_ok('Genealogy::Obituary::Lookup') }
 
 SKIP: {
-	skip('Database not installed', 22) if(!-r 'lib/Genealogy/Obituary/Lookup/data/obituaries.sql');
+	skip('Database not installed', 18) if(!-r 'lib/Genealogy/Obituary/Lookup/data/obituaries.sql');
 
 	Database::Abstraction::init('directory' => 'lib/Genealogy/Obituary/Lookup/data');
 
