@@ -394,7 +394,7 @@ sub search
 			# Guard with eval: if a value is already interned (read-only) a
 			# second fixate call would otherwise die with "Modification of a
 			# read-only value".  Silently tolerate that case.
-			eval { Data::Reuse::fixate(%{$obit}) };
+			{ local $@; eval { Data::Reuse::fixate(%{$obit}) } };
 		}
 		return @rc;
 	}
@@ -456,6 +456,7 @@ sub _create_url
 # Exit:       Formatted string.
 sub _i18n
 {
+	# TODO: Data Flow Anomaly - $self_or_class defined (D) but never used (D~ dead store; reserved for future per-instance locale selection)
 	my ($self_or_class, $key, $args) = @_;
 	my $tpl = $MESSAGES{$key}
 		// Carp::croak("Unknown i18n key '$key'");
