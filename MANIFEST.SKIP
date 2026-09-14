@@ -43,6 +43,7 @@
 \.tmp$
 \.#
 \.rej$
+schemas\.yml$
 \.swp$
 
 # Avoid OS-specific files/dirs
@@ -66,8 +67,11 @@
 \.releaserc
 \.lwpcookies
 Genealogy-.*
-\.sqlite$
-\.sqlite-journal$
-\.sql$
-\.sql-journal$
+.test-script-*
 typescript
+mutation.json
+^xt/mutant_\d
+CLAUDE.md
+\.claude
+\.circleci
+lib/Genealogy/Obituary/Lookup/data/

@@ -2,6 +2,7 @@ package Genealogy::Obituary::Lookup;
 
 use warnings;
 use strict;
+use autodie qw(:all);
 
 use Carp;
 use Data::Reuse;
@@ -11,18 +12,13 @@ use Module::Info;
 use Object::Configure 0.12;
 use Params::Get 0.13;
 use Params::Validate::Strict 0.09;
+use Readonly;
 use Return::Set;
 use Scalar::Util;
 
-use constant URLS => {
-	# 'M' => "https://mlarchives.rootsweb.com/listindexes/emails?listname=gen-obit&page=",
-	'M' => 'https://wayback.archive-it.org/20669/20231102044925/https://mlarchives.rootsweb.com/listindexes/emails?listname=gen-obit&page=',
-	'F' => 'https://www.freelists.org/post/obitdailytimes/Obituary-Daily-Times-',
-};
-
 =head1 NAME
 
-Genealogy::Obituary::Lookup - Lookup an obituary
+Genealogy::Obituary::Lookup - Lookup an obituary in the ODT/Rootsweb/funeral-notices database
 
 =head1 VERSION
 
@@ -32,180 +28,286 @@ Version 0.20
 
 our $VERSION = '0.20';
 
-# Class-level constants
-use constant {
-	DEFAULT_CACHE_DURATION => '1 day',	# The database is updated daily
-	MIN_LAST_NAME_LENGTH   => 1,
-	MAX_LAST_NAME_LENGTH   => 100,
-};
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+# URLs for the two archive sources; 'L' (local/link) has no fixed base URL.
+Readonly::Hash my %URLS => (
+	M => 'https://wayback.archive-it.org/20669/20231102044925/https://mlarchives.rootsweb.com/listindexes/emails?listname=gen-obit&page=',
+	F => 'https://www.freelists.org/post/obitdailytimes/Obituary-Daily-Times-',
+);
+
+Readonly::Scalar my $DEFAULT_CACHE_DURATION => '1 day';	# Database is rebuilt daily
+Readonly::Scalar my $MIN_LAST_NAME_LENGTH   => 1;
+Readonly::Scalar my $MAX_LAST_NAME_LENGTH   => 100;
+
+# ---------------------------------------------------------------------------
+# Internationalisation message map
+# ---------------------------------------------------------------------------
+# All user-facing error/warning text lives here.  Keys are stable; templates
+# use %{name} placeholders that _i18n() fills with a hashref of named args.
+my %MESSAGES = (
+	err_no_self       => "search() must be called on an object",
+	err_no_args       => 'Usage: %{package}->search(last => $val)',
+	err_no_last       => "Value for 'last' is mandatory",
+	err_no_obituaries => "Can't open the obituaries database",
+	err_no_page       => '%{package}: undefined $page',
+	err_no_source     => '%{package}: %{page}: undefined source',
+	err_bad_source    => "%{package}: Invalid source, '%{source}'. Valid sources are 'M', 'F' and 'L'",
+	err_no_newspaper  => "%{package}: undefined newspaper. Newspaper must be given when source type is 'L'",
+	err_bad_logger    => "Logger must be an object with info() and error() methods",
+	warn_not_dir      => '%{class}: %{dir} is not a directory',
+	warn_bad_usage    => '%{package}: use ->new() not ::new() to instantiate',
+);
 
 =head1 SYNOPSIS
 
-Looks up obituaries
-
     use Genealogy::Obituary::Lookup;
-    my $info = Genealogy::Obituary::Lookup->new();
-    # ...
+
+    my $obits  = Genealogy::Obituary::Lookup->new();
+    my @smiths = $obits->search(last => 'Smith');
+    print $smiths[0]->{'url'}, "\n";
+
+    # Scalar context - first match only
+    my $baal = $obits->search({ first => 'Eric', last => 'Baal' });
+    print $baal->{'url'}, "\n" if $baal;
 
 =head1 SUBROUTINES/METHODS
 
 =head2 new
 
-Creates a Genealogy::Obituary::Lookup object.
+Creates a L<Genealogy::Obituary::Lookup> object.
 
     my $obits = Genealogy::Obituary::Lookup->new();
+    my $clone  = $obits->new();                        # clone with no extra args
 
 Accepts the following optional arguments:
 
 =over 4
 
-=item * C<cache> - Passed to L<Database::Abstraction>
+=item * C<cache> - passed to L<Database::Abstraction>
 
-=item * C<config_file>
+=item * C<config_file> - path to a YAML/XML/INI configuration file whose keys
+are merged into the constructor arguments at runtime, allowing deployment-time
+override without code changes.
 
-Points to a configuration file which contains the parameters to C<new()>.
-The file can be in any common format including C<YAML>, C<XML>, and C<INI>.
-This allows the parameters to be set at run time.
+=item * C<directory> - directory that contains F<obituaries.sql>.  If a single
+non-reference argument is passed to C<new()>, it is taken as C<directory>.
 
-=item * C<directory>
-
-The directory containing the file obituaries.sql.
-If only one argument is given to C<new()>, it is taken to be C<directory>.
-
-=item * C<logger> - Passed to L<Database::Abstraction>
+=item * C<logger> - object with C<info()> and C<error()> methods (e.g.
+L<Log::Log4perl>, L<Log::Any>).
 
 =back
+
+=head3 EXAMPLE
+
+    # Default: discovers data/ relative to the installed module file
+    my $default = Genealogy::Obituary::Lookup->new();
+
+    # Explicit directory (useful during development)
+    my $dev = Genealogy::Obituary::Lookup->new(directory => 't/data');
+
+    # With structured logging
+    use Log::Log4perl qw(:easy);
+    Log::Log4perl->easy_init($DEBUG);
+    my $logged = Genealogy::Obituary::Lookup->new(logger => Log::Log4perl->get_logger());
+
+=head3 API SPECIFICATION
+
+=head4 INPUT
+
+  {
+    'directory'   => { type => 'string', optional => 1 },
+    'cache'       => { type => 'any',    optional => 1 },
+    'config_file' => { type => 'string', optional => 1 },
+    'logger'      => { type => 'object', optional => 1,
+                       must_can => [ 'info', 'error' ] }
+  }
+
+=head4 OUTPUT
+
+  On success:  blessed Genealogy::Obituary::Lookup hashref
+  On failure:  undef  (carp explains why)
+
+=head3 MESSAGES
+
+  warn_not_dir   - <class>: <dir> is not a directory.
+                   Resolution: pass a valid, readable directory.
+  warn_bad_usage - use ->new() not ::new() when passing arguments.
+                   Resolution: call as a class method.
+  err_bad_logger - Logger must have info() and error() methods.
+                   Resolution: wrap your logger in an adapter.
+
+=head3 PSEUDOCODE
+
+ 1. Parse arguments: accept hashref, key=>value list, or single bare string
+    (treated as directory).
+ 2. If called as a function (::new) with no args, tolerate and self-correct;
+    croak if args were given - the invocation is ambiguous.
+ 3. If $class is already a blessed object, clone it: merge new args into a
+    copy of the existing hash and bless into the same class.
+ 4. Merge config-file settings via Object::Configure.
+ 5. Validate the logger object if provided.
+ 6. Resolve the data directory: explicit arg > module-relative default.
+ 7. Carp and return undef if the directory is missing or unreadable.
+ 8. Bless and return with cache_duration defaulted (overridable by caller).
 
 =cut
 
 sub new
 {
-	my $class = shift;
+	my $class_in = shift;
 	my %args;
 
-	# Handle hash or hashref arguments
-	if((scalar(@_) == 1) && !ref($_[0])) {
+	# Support: ->new('path'), ->new(key=>val), ->new({key=>val})
+	if((scalar(@_) == 0) && !ref($class_in) && defined($class_in) && -d $class_in) {
+		# Called as Genealogy::Obituary::Lookup->new('/some/dir')
+		# $class_in is the directory, not the class — handled below via scalar arg
+		$args{'directory'} = $class_in;
+		$class_in = __PACKAGE__;
+	} elsif((scalar(@_) == 1) && !ref($_[0])) {
 		$args{'directory'} = $_[0];
 	} elsif(my $params = Params::Get::get_params(undef, @_)) {
 		%args = %{$params};
 	}
 
-	if(!defined($class)) {
-		if((scalar keys %args) > 0) {
-			# Use Genealogy::Obituary::Lookup->new, not Genealogy::Obituary::Lookup::new
-			carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
-			return;
+	if(!defined($class_in)) {
+		# Called as Genealogy::Obituary::Lookup::new() — tolerate only if no args
+		if(%args) {
+			Carp::croak(__PACKAGE__->_i18n('warn_bad_usage', {package => __PACKAGE__}));
 		}
-
-		# FIXME: this only works when no arguments are given
-		$class = __PACKAGE__;
-	} elsif(Scalar::Util::blessed($class)) {
-		# If $class is an object, clone it with new arguments
-		return bless { %{$class}, %args }, ref($class);
+		$class_in = __PACKAGE__;
+	} elsif(Scalar::Util::blessed($class_in)) {
+		# Clone: merge new args over existing state and re-bless
+		return bless { %{$class_in}, %args }, ref($class_in);
 	}
 
-	# Load the configuration from a config file, if provided
-	%args = %{Object::Configure::configure($class, \%args)};
+	# Merge configuration file settings (YAML / XML / INI) into %args
+	%args = %{Object::Configure::configure($class_in, \%args)};
 
-	# Validate logger object has required methods
+	# A logger must respond to info() and error() — anything else is a misconfiguration
 	if(defined $args{'logger'}) {
-		unless(Scalar::Util::blessed($args{'logger'}) && $args{'logger'}->can('info') && $args{'logger'}->can('error')) {
-			Carp::croak("Logger must be an object with info() and error() methods");
+		unless(Scalar::Util::blessed($args{'logger'})
+			&& $args{'logger'}->can('info')
+			&& $args{'logger'}->can('error'))
+		{
+			Carp::croak($class_in->_i18n('err_bad_logger'));
 		}
 	}
 
-	if(!defined(my $directory = ($args{'directory'} || $Genealogy::Obituary::Lookup::obituaries->{'directory'}))) {
-		# If the directory argument isn't given, see if we can find the data
-		$directory = Module::Info->new_from_loaded($class)->file();
-		$directory =~ s/\.pm$//;
-		$args{'directory'} = File::Spec->catfile($directory, 'data');
+	# Resolve the data directory, falling back to the module's own data/ subdirectory
+	unless(defined $args{'directory'}) {
+		my $info = Module::Info->new_from_loaded($class_in);
+		if(defined $info) {
+			(my $base = $info->file()) =~ s/\.pm$//;
+			my $derived = File::Spec->catfile($base, 'data');
+			$args{'directory'} = $derived if -d $derived;
+		}
 	}
 
-	unless((-d $args{'directory'}) && (-r $args{'directory'})) {
-		if(my $logger = $args{'logger'}) {
-			$logger->warn("$class: $args{directory} is not a directory");
-		}
-		Carp::carp("$class: $args{directory} is not a directory");
+	if(defined($args{'directory'}) && !((-d $args{'directory'}) && (-r $args{'directory'}))) {
+		my $msg = $class_in->_i18n('warn_not_dir',
+			{class => $class_in, dir => $args{'directory'}});
+		$args{'logger'}->warn($msg) if $args{'logger'};
+		Carp::carp($msg);
 		return;
 	}
 
-	# cache_duration can be overridden by the args
-	return bless {
-		cache_duration => DEFAULT_CACHE_DURATION,
-		%args,
-	}, $class;
+	return bless { cache_duration => $DEFAULT_CACHE_DURATION, %args }, $class_in;
 }
 
 =head2 search
 
-Searches the database.
+Searches the obituary database.
 
-    # Returns an array of hashrefs
-    my @smiths = $obits->search(last => 'Smith');	# You must at least define the last name to search for
+    # List context: all matching records
+    my @smiths = $obits->search(last => 'Smith');
+    print $smiths[0]->{'url'}, "\n";
 
-    print $smiths[0]->{'first'}, "\n";
+    # Scalar context: first matching record, or undef
+    my $entry = $obits->search({ first => 'John', last => 'Smith' });
 
-Supports two return modes:
+The returned hashrefs always include a C<url> key pointing to the source archive.
 
 =over 4
 
-=item * C<List context>
+=item * C<List context> - array of hashrefs, empty on no match.
 
-Returns an array of hash references.
-
-=item * C<Scalar context>
-
-Returns a single hash reference,
-or C<undef> if there is no match.
+=item * C<Scalar context> - single hashref, or C<undef> on no match.
 
 =back
 
-=head3	API SPECIFICATION
+=head3 EXAMPLE
 
-=head4	INPUT
+    my @results = $obits->search(last => 'O-Brien');
+    foreach my $r (@results) {
+        printf "%s %s, age %s - %s\n",
+            $r->{first} // '?', $r->{last},
+            $r->{age}   // 'unknown',
+            $r->{url};
+    }
+
+    # With optional filters
+    my $hit = $obits->search(first => 'John', middle => 'W', last => 'Coppage');
+
+=head3 API SPECIFICATION
+
+=head4 INPUT
 
   {
     'last' => {
-      type => 'string',
-      min => 1,
-      max => 100,
-      matches => qr/^[\w\-]+$/	# Allow hyphens in surnames
-    }, 'first' => {
-      type => 'string',
+      type    => 'string',
+      min     => 1,
+      max     => 100,
+      matches => qr/^[\w\-]+$/     # hyphens allowed, apostrophes not
+    },
+    'first' => {
+      type     => 'string',
       optional => 1,
-      min => 1,
-      max => 100
-    }, 'middle' => {
-      type => 'string',
+      min      => 1,
+      max      => 100
+    },
+    'middle' => {
+      type     => 'string',
       optional => 1,
-      min => 1,
-      max => 100
-    }, 'age' => {
-      type => 'integer',
+      min      => 1,
+      max      => 100
+    },
+    'age' => {
+      type     => 'integer',
       optional => 1,
-      min => 0,
-      max => 120
+      min      => 0,
+      max      => 120
     }
   }
 
-=head4	OUTPUT
+=head4 OUTPUT
 
-Argument error: croak
-No matches found: undef
+  Argument error:     croak
+  No match (list):    ()
+  No match (scalar):  undef
+  Match (list):       ( HashRef, ... )   each has a 'url' key
+  Match (scalar):     HashRef            has a 'url' key
 
-Scalar context:
+=head3 MESSAGES
 
-  {
-    'type' => 'hashref',
-    'min' => 1
-  }
+  err_no_self       - search() must be called on an object (->search, not ::search).
+  err_no_last       - Value for 'last' is mandatory and must be non-empty.
+  err_no_obituaries - Cannot open the obituaries database; check directory path.
+  (from _create_url) err_bad_source, err_no_page, err_no_source, err_no_newspaper.
 
-List context:
+=head3 PSEUDOCODE
 
-  {
-    'type' => 'array',
-    'min' => 1
-  }
+ 1. Croak unless $self is a blessed object.
+ 2. Parse args with Params::Get; validate schema with Params::Validate::Strict.
+ 3. Explicitly croak if 'last' is undef or empty - Params::Validate::Strict
+    passes undef through for defined-but-required fields.
+ 4. Lazily open the obituaries DB handle (once per object lifetime).
+ 5. Croak if the DB handle could not be initialised.
+ 6. List context: fetchall, attach URL, fixate string values, return list.
+ 7. Scalar context: fetchone, attach URL, fixate string values, return hashref.
+ 8. Return undef / empty list when no rows match.
 
 =cut
 
@@ -213,107 +315,169 @@ sub search
 {
 	my $self = shift;
 
-	# Ensure $self is valid
-	Carp::croak('search() must be called on an object') unless(Scalar::Util::blessed($self));
+	Carp::croak(__PACKAGE__->_i18n('err_no_self'))
+		unless Scalar::Util::blessed($self);
 
-        my $params = Params::Validate::Strict::validate_strict({
-		args => Params::Get::get_params('last', @_),
+	# Guard against zero args before Params::Get, which uses confess (not croak)
+	# for the 0-args case, preventing Test::Carp from detecting the error type.
+	Carp::croak(__PACKAGE__->_i18n('err_no_args', {package => __PACKAGE__}))
+		unless @_;
+
+	my $params = Params::Validate::Strict::validate_strict({
+		args   => Params::Get::get_params('last', @_),
 		schema => {
 			'last' => {
-				type => 'string',
-				min => 1,
-				max => 100,
-				matches => qr/^[\w\-]+$/	# Allow hyphens in surnames
-			}, 'first' => {
-				type => 'string',
-				optional => 1,
-				min => 1,
-				max => 100
-			}, 'middle' => {
-				type => 'string',
-				optional => 1,
-				min => 1,
-				max => 100
-			}, 'age' => {
-				type => 'integer',
-				optional => 1,
-				min => 0,
-				max => 120
-			}
-		}
+				type    => 'string',
+				min     => $MIN_LAST_NAME_LENGTH,
+				max     => $MAX_LAST_NAME_LENGTH,
+				matches => qr/^[\w\-]+$/,	# Allow hyphens in surnames
+			},
+			'first' => {
+				type => 'string', optional => 1, min => 1, max => 100,
+			},
+			'middle' => {
+				type => 'string', optional => 1, min => 1, max => 100,
+			},
+			'age' => {
+				type => 'integer', optional => 1, min => 0, max => 120,
+			},
+		},
 	});
 
-	# Validate required parameters thoroughly
-	unless((defined($params->{'last'})) && (length($params->{'last'}) > 0)) {
-		if(my $logger = $self->{'logger'}) {
-			$logger->error("Value for 'last' is mandatory");
-		}
-		Carp::croak("Value for 'last' is mandatory");
+	# Params::Validate::Strict enforces schema structure but passes undef values
+	# for defined keys, so we check the mandatory 'last' field explicitly here.
+	unless(defined($params->{'last'}) && length($params->{'last'}) > 0) {
+		$self->{'logger'}->error(__PACKAGE__->_i18n('err_no_last'))
+			if $self->{'logger'};
+		Carp::croak(__PACKAGE__->_i18n('err_no_last'));
 	}
 
-	# Sanitize input to prevent SQL injection
-	$params->{'last'} =~ s/[^\w\s\-']//g;	# Allow only word chars, spaces, hyphens, apostrophes
+	# Lazily initialise the DB handle — shared for the lifetime of the object
+	$self->{'obituaries'} //= Genealogy::Obituary::Lookup::obituaries->new(
+		no_entry  => 1,
+		no_fixate => 1,
+		%{$self},
+	);
 
-	$self->{'obituaries'} ||= Genealogy::Obituary::Lookup::obituaries->new(no_entry => 1, no_fixate => 1, %{$self});
-
-	if(!defined($self->{'obituaries'})) {
-		if(my $logger = $self->{'logger'}) {
-			$logger->error("Can't open the obituaries database");
-		}
-		Carp::croak("Can't open the obituaries database");
+	unless(defined $self->{'obituaries'}) {
+		$self->{'logger'}->error(__PACKAGE__->_i18n('err_no_obituaries'))
+			if $self->{'logger'};
+		Carp::croak(__PACKAGE__->_i18n('err_no_obituaries'));
 	}
 
 	if(wantarray) {
-		if(my $obituaries = $self->{'obituaries'}->selectall_hashref($params)) {
-			foreach my $obit(@{$obituaries}) {
-				$obit->{'url'} = _create_url($obit) if(defined($obit));
-			}
-			my @rc = grep { defined $_ } @{$obituaries};
-			Data::Reuse::fixate(@rc);
-			return @rc;
+		my $obituaries = $self->{'obituaries'}->selectall_hashref($params)
+			or return;
+		my @rc = grep { defined } @{$obituaries};
+		for my $obit (@rc) {
+			$obit->{'url'} = _create_url($obit);
+			# Intern string values in the hash to reduce memory for repeated
+			# strings (source, place, newspaper) across large result sets.
+			# fixate(%{$obit}) passes the hashref via the \[@%] prototype.
+			Data::Reuse::fixate(%{$obit});
 		}
-		return;
+		return @rc;
 	}
-	if(defined(my $obit = $self->{'obituaries'}->fetchrow_hashref($params))) {
-		$obit->{'url'} = _create_url($obit);
-		Data::Reuse::fixate(%{$obit});
 
-		return Return::Set::set_return($obit, { 'type' => 'hashref', 'min' => 1 });
-	}
-	return;	# undef
+	my $obit = $self->{'obituaries'}->fetchrow_hashref($params)
+		or return;
+	$obit->{'url'} = _create_url($obit);
+	Data::Reuse::fixate(%{$obit});
+
+	return Return::Set::set_return($obit, { type => 'hashref', min => 1 });
 }
 
-sub _create_url {
-	my $obit = shift;
+# ---------------------------------------------------------------------------
+# Private helpers
+# ---------------------------------------------------------------------------
+
+# Purpose:    Builds the source URL for an obituary record.
+# Entry:      $obit — hashref with 'source' (M/F/L), 'page', and optionally
+#             'newspaper' (required for source 'L').
+# Exit:       String URL.
+sub _create_url
+{
+	# Enforce privacy: only code within this package may call _create_url.
+	Carp::croak("_create_url() is a private method of " . __PACKAGE__)
+		unless (caller)[0] eq __PACKAGE__;
+
+	my $obit   = shift;
+	my $page   = $obit->{'page'};
 	my $source = $obit->{'source'};
-	my $page = $obit->{'page'};
 
-	if(!defined($page)) {
-		# use Data::Dumper;
-		# ::diag(Data::Dumper->new([$obit])->Dump());
-		Carp::croak(__PACKAGE__, ': undefined $page');
-	}
-	if(!defined($source)) {
-		Carp::croak(__PACKAGE__, ": $page: undefined source");
+	Carp::croak(__PACKAGE__->_i18n('err_no_page', {package => __PACKAGE__}))
+		unless defined $page;
+	Carp::croak(__PACKAGE__->_i18n('err_no_source', {package => __PACKAGE__, page => $page}))
+		unless defined $source;
+
+	if($source eq 'M' || $source eq 'F') {
+		return $URLS{$source} . $page;
 	}
 
-	if($source eq 'M') {
-		return URLS->{'M'} . $page;
-	}
-	if($source eq 'F') {
-		return URLS->{'F'} . $page;
-	}
 	if($source eq 'L') {
-		if($obit->{'newspaper'} =~ /^https?:\/\//) {
-			return $obit->{'newspaper'};
-		}
-		if($obit->{'page'} =~ /^https?:\/\//) {
-			return $obit->{'page'};
-		}
-		Carp::croak(__PACKAGE__, ": undefined newspaper.  Newspaper much be given when source type is 'L'");
+		# 'L' (local/link) records embed the full URL in newspaper or page
+		return $obit->{'newspaper'}
+			if defined($obit->{'newspaper'}) && $obit->{'newspaper'} =~ m{^https?://};
+		return $page
+			if $page =~ m{^https?://};
+		Carp::croak(__PACKAGE__->_i18n('err_no_newspaper', {package => __PACKAGE__}));
 	}
-	Carp::croak(__PACKAGE__, ": Invalid source, '$source'. Valid sources are 'M', 'F' and 'L'");
+
+	Carp::croak(__PACKAGE__->_i18n('err_bad_source',
+		{package => __PACKAGE__, source => $source}));
 }
+
+# Purpose:    Looks up a user-facing message template and interpolates named
+#             placeholders of the form %{key} using the supplied args hashref.
+# Entry:      $self_or_class — object or class name (not used yet; reserved for
+#             per-instance locale configuration).
+#             $key  — key into %MESSAGES.
+#             $args — optional hashref of placeholder values.
+# Exit:       Formatted string.
+sub _i18n
+{
+	my ($self_or_class, $key, $args) = @_;
+	my $tpl = $MESSAGES{$key}
+		// Carp::croak("Unknown i18n key '$key'");
+	$args //= {};
+	(my $msg = $tpl) =~ s/%\{(\w+)\}/$args->{$1} \/\/ ''/ge;
+	return $msg;
+}
+
+=head1 LIMITATIONS
+
+=over 4
+
+=item * B<Ancestry / Rootsweb archive loss.>
+Only the first 18 pages of the mlarchives index are preserved on the Wayback
+Machine.  Approximately 10,000+ records from later pages are unrecoverable.
+
+=item * B<No full-text search.>
+Searches are keyed on structured fields (last, first, middle, age).  There is
+no free-text obituary content to search.
+
+=item * B<i18n is English-only.>
+The C<%MESSAGES> map supports placeholder interpolation but is not backed by a
+locale-selection mechanism.  A future release should route through
+L<Locale::Maketext> or L<Locale::Simple>.
+
+=item * B<Data::Reuse fixate semantics.>
+The string-interning via C<Data::Reuse::fixate> on hash-slice aliases is
+correct in theory (hash slices are lvalues) but depends on
+C<String::Intern::Internalize> modifying @_ in place.  Verify with your
+installed version if memory consumption is a concern.
+
+=item * B<Private method enforcement without Sub::Private.>
+C<_create_url> and C<_i18n> enforce privacy via an inline C<caller> check.
+Install L<Sub::Private> and replace the checks for a compile-time guarantee.
+
+=item * B<Single-row scalar context.>
+In scalar context, C<search()> returns the first row from the underlying
+driver.  Row order depends on L<Database::Abstraction> and SQLite's query
+plan; add an explicit ORDER BY in the driver subclass if deterministic ordering
+is required.
+
+=back
 
 =head1 AUTHOR
 
@@ -321,8 +485,7 @@ Nigel Horne, C<< <njh at nigelhorne.com> >>
 
 =head1 BUGS
 
-Ancestry has removed the archives.
-The first 18 pages are on Wayback machine, but the rest is lost.
+See L<https://rt.cpan.org/NoAuth/Bugs.html?Dist=Genealogy-Obituary-Lookup>.
 
 =head1 SEE ALSO
 
@@ -330,29 +493,15 @@ L<Database::Abstraction>
 
 =over 4
 
+=item * The Obituary Daily Times: L<https://sites.rootsweb.com/~obituary/>
+
+=item * Archived Rootsweb data: L<https://wayback.archive-it.org/20669/20231102044925/https://mlarchives.rootsweb.com/listindexes/emails?listname=gen-obit>
+
+=item * Recent data: L<https://www.freelists.org/list/obitdailytimes>
+
+=item * L<Configure an Object at Runtime|Object::Configure>
+
 =item * L<Test Dashboard|https://nigelhorne.github.io/Genealogy-Obituary-Lookup/coverage/>
-
-=item * The Obituary Daily Times
-
-L<https://sites.rootsweb.com/~obituary/>
-
-=item * Archived Rootsweb data
-
-L<https://wayback.archive-it.org/20669/20231102044925/https://mlarchives.rootsweb.com/listindexes/emails?listname=gen-obit>
-
-=item * Funeral Notices
-
-L<https://www.funeral-notices.co.uk>
-
-=item * Recent data
-
-L<https://www.freelists.org/list/obitdailytimes>
-
-=item * Older data
-
-L<https://obituaries.rootsweb.com/obits/searchObits>
-
-=item * Test coverage report: L<https://nigelhorne.github.io/Genealogy-Obituary-Lookup/coverage/>
 
 =back
 
@@ -360,31 +509,43 @@ L<https://obituaries.rootsweb.com/obits/searchObits>
 
 This module is provided as-is without any warranty.
 
-You can find documentation for this module with the perldoc command.
-
     perldoc Genealogy::Obituary::Lookup
-
-You can also look for information at:
 
 =over 4
 
-=item * MetaCPAN
+=item * MetaCPAN: L<https://metacpan.org/release/Genealogy-Obituary-Lookup>
 
-L<https://metacpan.org/release/Genealogy-Obituary-Lookup>
+=item * RT: L<https://rt.cpan.org/NoAuth/Bugs.html?Dist=Genealogy-Obituary-Lookup>
 
-=item * RT: CPAN's request tracker
-
-L<https://rt.cpan.org/NoAuth/Bugs.html?Dist=Genealogy-Obituary-Lookup>
-
-=item * CPAN Testers' Matrix
-
-L<http://matrix.cpantesters.org/?dist=Genealogy-Obituary-Lookup>
-
-=item * CPAN Testers Dependencies
-
-L<http://deps.cpantesters.org/?module=Genealogy::Obituary::Lookup>
+=item * CPAN Testers' Matrix: L<http://matrix.cpantesters.org/?dist=Genealogy-Obituary-Lookup>
 
 =back
+
+=encoding UTF-8
+
+=head1 FORMAL SPECIFICATION
+
+=head2 new
+
+  𝒏𝒆𝒘 : Class × Args → (Object ∪ {⊥})
+
+  𝒏𝒆𝒘(C, A) ≙
+    let D = A.directory ∨ module_data_path(C)
+    in  ¬readable(D)                                           ⟹ ⊥
+      ∥  A.logger ≠ ∅ ∧ ¬(can(A.logger,'info') ∧
+                            can(A.logger,'error'))             ⟹ abort
+      ∥  otherwise   ⟹ ⟨ cache_duration ↦ DEFAULT_CACHE_DURATION ⟩ ⊕ A
+
+=head2 search
+
+  𝒔𝒆𝒂𝒓𝒄𝒉 : Object × Params → ([Obit] ∪ Obit ∪ {undef})
+
+  𝒔𝒆𝒂𝒓𝒄𝒉(self, P) ≙
+    pre  blessed(self) ∧ P.last ≠ ∅
+    post wantarray ⟹ { o : Obit | match(self.db, P) } |> map(add_url)
+              else ⟹ head({ o : Obit | match(self.db, P) } |> map(add_url))
+
+  where  add_url(o) ≙ o ⊕ ⟨ url ↦ _create_url(o) ⟩
 
 =head1 LICENSE AND COPYRIGHT
 
