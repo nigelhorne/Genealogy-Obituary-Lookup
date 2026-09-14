@@ -22,6 +22,7 @@ t/config_file.t
 t/coverage.t
 t/critic.t
 t/data-flow.t
+t/domain.t
 t/edge_cases.t
 t/eof.t
 t/eol.t

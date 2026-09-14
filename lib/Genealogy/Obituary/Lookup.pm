@@ -128,6 +128,45 @@ L<Log::Log4perl>, L<Log::Any>).
     }
   }
 
+=head4 DOMAIN — directory
+
+  Valid partitions
+    EP-V  Absent / undef        Auto-discovers data/ relative to module file.
+    EP-V  Existing readable dir Accepted; stored in $self->{directory}.
+
+  Invalid partitions (all carp + return undef)
+    EP-I  Non-existent path     Carps "not a directory".
+    EP-I  Existing plain file   Carps "not a directory".
+    EP-I  Unreadable directory  Carps "not a directory".
+    EP-I  Empty string ""       Carps "not a directory" (-d "" is false).
+    EP-I  Path with null byte   Rejected before -d (prevents "Embedded nulls" fatal).
+
+=head4 DOMAIN — logger
+
+  Valid partition
+    EP-V  Blessed object with can('info') && can('error')   Accepted.
+          Additional methods beyond info/error are fine.
+
+  Invalid partitions (all croak err_bad_logger)
+    EP-I  String                Not an object.
+    EP-I  Number                Not an object.
+    EP-I  Unblessed hashref     Not blessed.
+    EP-I  Coderef               Not blessed.
+    EP-I  Object missing info() Incomplete interface.
+    EP-I  Object missing error() Incomplete interface.
+
+=head4 DOMAIN — invocation style
+
+  Valid
+    EP-V  Pkg->new(...)          Class method — normal invocation.
+    EP-V  $obj->new(...)         Object method — clone with optional overrides.
+    EP-V  Pkg->new('/path')      Single bare string — treated as directory.
+    EP-V  Pkg->new({key=>val})   Hashref argument.
+    EP-V  Pkg::new()             No-arg bare call — tolerated silently.
+
+  Invalid
+    EP-I  Pkg::new(undef, args)  Croak warn_bad_usage (undef class + args detected).
+
 =head4 OUTPUT
 
   On success:  blessed Genealogy::Obituary::Lookup hashref
@@ -298,6 +337,74 @@ The returned hashrefs always include a C<url> key pointing to the source archive
       max      => 120
     }
   }
+
+=head4 DOMAIN — last (required)
+
+  Boundary values
+    BVA MIN-1  ""          (0 chars)   INVALID — croak err_no_last
+    BVA MIN    "A"         (1 char)    valid
+    BVA MAX    "A"x100     (100 chars) valid
+    BVA MAX+1  "A"x101     (101 chars) INVALID — croak (schema max exceeded)
+
+  Equivalence partitions
+    EP-V  "Smith"           Typical ASCII surname.
+    EP-V  "Smith-Jones"     Hyphen is allowed (in [\w\-]).
+    EP-V  "Mc_Arthur"       Underscore is \w.
+    EP-V  "Smith2"          Digit is \w.
+    EP-I  undef             Croak err_no_last.
+    EP-I  "O'Brien"         Apostrophe not in [\w\-] — rejected.
+    EP-I  "van Berg"        Space not in [\w\-] — rejected.
+    EP-I  "Smith; DROP ..." SQL injection metacharacters rejected.
+
+  Character-domain (format partition)
+    FMT   German umlauts (ü, ß)  May match \w when string is UTF-8 flagged.
+                                  No fatal crash guaranteed either way.
+    FMT   Emoji                  Not \w — rejected.
+    FMT   Zalgo combining marks  Not \w — rejected.
+    FMT   RTL-override (U+202E)  Not \w — rejected.
+
+=head4 DOMAIN — first / middle (optional)
+
+  Boundary values
+    BVA MIN-1  ""       (0 chars)   INVALID — croak (schema min exceeded)
+    BVA MIN    "J"      (1 char)    valid
+    BVA MAX    "J"x100  (100 chars) valid
+    BVA MAX+1  "J"x101  (101 chars) INVALID
+
+  Equivalence partitions
+    EP-V  Absent                   Valid — field is optional.
+    EP-V  "John"                   Typical value.
+    EP-V  "O'Malley"               No format constraint on first/middle.
+    EP-I  ""  (empty string)       INVALID (min=1).
+
+=head4 DOMAIN — age (optional integer)
+
+  Boundary values
+    BVA MIN-1  -1    INVALID — croak (schema min=0 exceeded)
+    BVA MIN     0    valid (newborn)
+    BVA MAX   120    valid (maximum recorded human lifespan)
+    BVA MAX+1 121    INVALID — croak (schema max exceeded)
+
+  Equivalence partitions
+    EP-V  65           Typical adult age.
+    EP-V  Absent       Valid — field is optional.
+    EP-I  -1           Below minimum.
+    EP-I  121          Above maximum.
+    EP-I  1.5          Non-integer float — rejected (type=integer).
+    EP-I  "old"        Non-numeric string — rejected.
+
+=head4 DOMAIN — invocation style
+
+  EP-V  $obj->search(...)         Normal object-method call.
+  EP-I  Pkg->search(...)          Croak err_no_self (class is not blessed).
+  EP-I  Pkg::search(...)          Croak err_no_self.
+  EP-I  $obj->search()            Croak err_no_args (zero args).
+
+=head4 CONTEXT DOMAIN
+
+  List context   Returns list of hashrefs; empty list on no match.
+  Scalar context Returns single hashref (first match) or undef.
+  Void context   No crash; result silently discarded.
 
 =head4 OUTPUT
 
