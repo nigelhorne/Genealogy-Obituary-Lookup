@@ -124,7 +124,8 @@ L<Log::Log4perl>, L<Log::Any>).
     'logger'      => {
     	type => 'object',
 	optional => 1,
-	can => [ 'info', 'error' ] }
+	can => [ 'info', 'error' ]
+    }
   }
 
 =head4 OUTPUT
