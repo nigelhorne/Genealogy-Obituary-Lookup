@@ -121,8 +121,10 @@ L<Log::Log4perl>, L<Log::Any>).
     'directory'   => { type => 'string', optional => 1 },
     'cache'       => { type => 'any',    optional => 1 },
     'config_file' => { type => 'string', optional => 1 },
-    'logger'      => { type => 'object', optional => 1,
-                       must_can => [ 'info', 'error' ] }
+    'logger'      => {
+    	type => 'object',
+	optional => 1,
+	can => [ 'info', 'error' ] }
   }
 
 =head4 OUTPUT
