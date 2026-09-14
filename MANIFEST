@@ -39,6 +39,7 @@ t/pod-spelling.t
 t/pod-synopsis.t
 t/pod.t
 t/strict.t
+t/unit.t
 t/unused.t
 t/vars.t
 t/version.t

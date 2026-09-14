@@ -143,15 +143,12 @@ subtest 'new() — valid logger object is accepted' => sub {
 		'stored logger responds to info() and error()');
 };
 
-subtest 'new() — any logger value is wrapped by Object::Configure' => sub {
-	# Object::Configure::configure() wraps every value supplied as 'logger'
-	# (objects, unblessed refs, scalars) in Log::Abstraction before new()
-	# checks the interface.  The err_bad_logger croak is therefore unreachable
-	# via the standard constructor; we verify the wrapping instead.
-	my $obj = _new_obj(logger => {});
-	ok(defined $obj,                    'new() succeeds even with a bare hashref logger');
-	ok($obj->{logger}->can('info'),     'wrapped logger responds to info()');
-	ok($obj->{logger}->can('error'),    'wrapped logger responds to error()');
+subtest 'new() — unblessed logger value croaks (err_bad_logger)' => sub {
+	# Logger validation now runs BEFORE Object::Configure can wrap the value,
+	# so an unblessed ref is correctly rejected as a programmer error.
+	throws_ok { _new_obj(logger => {}) }
+		qr/Logger must/,
+		'new() croaks with err_bad_logger when an unblessed ref is passed as logger';
 };
 
 subtest 'new() — single scalar arg is treated as the directory' => sub {

@@ -186,10 +186,8 @@ sub new
 		return bless { %{$class_in}, %args }, ref($class_in);
 	}
 
-	# Merge configuration file settings (YAML / XML / INI) into %args
-	%args = %{Object::Configure::configure($class_in, \%args)};
-
-	# A logger must respond to info() and error() — anything else is a misconfiguration
+	# Validate the logger before Object::Configure can wrap it; the wrapper
+	# always satisfies the interface check so we must test the original value.
 	if(defined $args{'logger'}) {
 		unless(Scalar::Util::blessed($args{'logger'})
 			&& $args{'logger'}->can('info')
@@ -198,6 +196,9 @@ sub new
 			Carp::croak($class_in->_i18n('err_bad_logger'));
 		}
 	}
+
+	# Merge configuration file settings (YAML / XML / INI) into %args
+	%args = %{Object::Configure::configure($class_in, \%args)};
 
 	# Resolve the data directory, falling back to the module's own data/ subdirectory
 	unless(defined $args{'directory'}) {
