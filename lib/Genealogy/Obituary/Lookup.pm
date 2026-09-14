@@ -210,6 +210,19 @@ sub new
 		}
 	}
 
+	# Null bytes in a path string cause a fatal "Embedded nulls are forbidden"
+	# error inside Perl's stat() / -d operator.  Reject them early so the module
+	# carps gracefully rather than dying with an uncatchable exception.
+	if(defined($args{'directory'}) && !ref($args{'directory'})
+		&& index($args{'directory'}, "\0") >= 0)
+	{
+		my $msg = $class_in->_i18n('warn_not_dir',
+			{class => $class_in, dir => '(path contains null byte)'});
+		$args{'logger'}->warn($msg) if $args{'logger'};
+		Carp::carp($msg);
+		return;
+	}
+
 	if(defined($args{'directory'}) && !((-d $args{'directory'}) && (-r $args{'directory'}))) {
 		my $msg = $class_in->_i18n('warn_not_dir',
 			{class => $class_in, dir => $args{'directory'}});
@@ -378,7 +391,10 @@ sub search
 			# Intern string values in the hash to reduce memory for repeated
 			# strings (source, place, newspaper) across large result sets.
 			# fixate(%{$obit}) passes the hashref via the \[@%] prototype.
-			Data::Reuse::fixate(%{$obit});
+			# Guard with eval: if a value is already interned (read-only) a
+			# second fixate call would otherwise die with "Modification of a
+			# read-only value".  Silently tolerate that case.
+			eval { Data::Reuse::fixate(%{$obit}) };
 		}
 		return @rc;
 	}
@@ -386,7 +402,7 @@ sub search
 	my $obit = $self->{'obituaries'}->fetchrow_hashref($params)
 		or return;
 	$obit->{'url'} = _create_url($obit);
-	Data::Reuse::fixate(%{$obit});
+	eval { Data::Reuse::fixate(%{$obit}) };
 
 	return Return::Set::set_return($obit, { type => 'hashref', min => 1 });
 }

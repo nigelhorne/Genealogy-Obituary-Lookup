@@ -21,6 +21,7 @@ t/conf/search.yml
 t/config_file.t
 t/coverage.t
 t/critic.t
+t/edge_cases.t
 t/eof.t
 t/eol.t
 t/fixme.t
