@@ -42,7 +42,7 @@
 		/* Show cursor points on the headers to show that they are clickable */
 		th { background-color: #f2f2f2; cursor: pointer; }
 		th.sortable {
-			cursor: pointer;
+			cursor: grab;
 			user-select: none;
 			white-space: nowrap;
 		}
@@ -54,6 +54,11 @@
 			color: #000;	/* dark for active */
 			font-weight: bold;
 		}
+		/* Prevent child spans intercepting drag events so enter/leave fire only on the th */
+		th.sortable .label,
+		th.sortable .arrow { pointer-events: none; }
+		th.col-dragging { opacity: 0.4; cursor: grabbing; }
+		th.col-drag-over { outline: 2px dashed #555; background-color: #d8eaff !important; }
 		.sparkline {
 			display: inline-block;
 			vertical-align: middle;
@@ -134,10 +139,10 @@
 	<a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup">
 		<img src="https://img.shields.io/github/stars/nigelhorne/Genealogy-Obituary-Lookup?style=social" alt="GitHub stars">
 	</a>
-	<img src="https://img.shields.io/badge/coverage-75%25-yellow" alt="Coverage badge">
+	<img src="https://img.shields.io/badge/coverage-98%25-brightgreen" alt="Coverage badge">
 </div>
 <h1>Genealogy::Obituary::Lookup</h1><h2>Coverage Report</h2>
-<table data-sort-col="0" data-sort-order="asc">
+<table data-sort-col="0" data-sort-order="asc" data-table-id="coverage">
 <!-- Make the column headers clickable -->
 <thead>
 <tr>
@@ -153,10 +158,10 @@
 
 <tbody>
 
-<tr class="med"><td><a href="blib-lib-Genealogy-Obituary-Lookup-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/11648dc882246b8005fb00e38f95e0962a0e7b3d/blib/lib/Genealogy/Obituary/Lookup.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2"></canvas></td><td>81.5</td><td>57.7</td><td>52.4</td><td>100.0</td><td><span class="coverage-badge badge-warn" title="Moderate coverage">74.2%</span></td><td class="neutral" title="Previous: 74.2%">&#9679; 0.0%</td></tr>
-<tr class="high"><td><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm.html" title="View coverage line by line" target="_blank">blib/lib/Genealogy/Obituary/Lookup/obituaries.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/11648dc882246b8005fb00e38f95e0962a0e7b3d/blib/lib/Genealogy/Obituary/Lookup/obituaries.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0"></canvas></td><td>100.0</td><td>0.0</td><td>0.0</td><td>100.0</td><td><span class="coverage-badge badge-good" title="Excellent coverage">100.0%</span></td><td class="neutral" title="Previous: 100.0%">&#9679; 0.0%</td></tr>
-<tr class="summary-row nosort"><td colspan="2"><strong>Summary</strong></td><td colspan="2">2 files</td><td colspan="3">Avg: 87%, Low: 0</td></tr>
-<tr class="med nosort"><td><strong>Total</strong></td><td>82.8</td><td>57.7</td><td>52.4</td><td>100.0</td><td colspan="2"><strong>75.6</strong></td></tr>
+<tr class="high"><td><a href="blib-lib-Genealogy-Obituary-Lookup-pm.html" title="View coverage line by line" target="_blank">lib/Genealogy/Obituary/Lookup.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/0b9f4f63e825bb8141740e5cceac90833b3356cc/lib/Genealogy/Obituary/Lookup.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2,74.2"></canvas></td><td>100.0</td><td>92.2</td><td>95.7</td><td>100.0</td><td><span class="coverage-badge badge-good" title="Excellent coverage">97.3%</span></td><td class="positive" title="Previous: 74.2%">&#9650; 23.1%</td></tr>
+<tr class="high"><td><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm.html" title="View coverage line by line" target="_blank">lib/Genealogy/Obituary/Lookup/obituaries.pm</a> <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/blob/0b9f4f63e825bb8141740e5cceac90833b3356cc/lib/Genealogy/Obituary/Lookup/obituaries.pm" class="icon-link" title="View source on GitHub">&#128269;</a><canvas class="sparkline" width="80" height="20" data-points="100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0"></canvas></td><td>100.0</td><td>0.0</td><td>0.0</td><td>100.0</td><td><span class="coverage-badge badge-good" title="Excellent coverage">100.0%</span></td><td class="neutral" title="Previous: 100.0%">&#9679; 0.0%</td></tr>
+<tr class="summary-row nosort"><td colspan="2"><strong>Summary</strong></td><td colspan="2">2 files</td><td colspan="3">Avg: 98%, Low: 0</td></tr>
+<tr class="high nosort"><td><strong>Total</strong></td><td>100.0</td><td>46.1</td><td>47.8</td><td>100.0</td><td colspan="2"><strong>98.7</strong></td></tr>
 </tbody></table>
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1em;">
 	<div>
@@ -173,12 +178,11 @@
 		<button id="resetZoomBtn" type="button">Reset Zoom</button>
 	</div>
 </div>
-
 <canvas id="coverageTrend" width="600" height="300"></canvas>
 <!-- Zoom controls for the trend chart -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!-- Add chartjs-plugin-zoom (required for wheel/pinch/drag zoom & pan) -->
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.1.1/dist/chartjs-plugin-zoom.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom\@2.1.1/dist/chartjs-plugin-zoom.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 <script>
 function linearRegression(data) {
@@ -191,7 +195,7 @@ function linearRegression(data) {
 	const sumXY = xs.reduce((acc, val, i) => acc + val * ys[i], 0);
 	const sumX2 = xs.reduce((acc, val) => acc + val * val, 0);
 
-	if (n < 2 || (n * sumX2 - sumX * sumX) === 0) {
+	if(n < 2 || (n * sumX2 - sumX * sumX) === 0) {
 		return [];
 	}
 	const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
@@ -203,24 +207,25 @@ function linearRegression(data) {
 	}));
 }
 
-const dataPoints = [ { x: "2026-02-16T08:50:07-05:00", y: 75.5656108597285, delta: 0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/4443b83", label: "2026-02-16T08:50:07-05:00", pointBackgroundColor: "gray", comment: "Fix CI" },
-{ x: "2026-02-16T08:56:05-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/0ef16e9", label: "2026-02-16T08:56:05-05:00", pointBackgroundColor: "gray", comment: "Latest test dasboard" },
-{ x: "2026-02-16T09:47:34-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/2b4b066", label: "2026-02-16T09:47:34-05:00", pointBackgroundColor: "gray", comment: "Run pod2markdown" },
-{ x: "2026-02-16T10:31:22-05:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/963d83a", label: "2026-02-16T10:31:22-05:00", pointBackgroundColor: "gray", comment: "Fix CircleCI" },
-{ x: "2026-03-23T19:38:24-04:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/7709ab6", label: "2026-03-23T19:38:24-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #12 from nigelhorne/dependabot/github_actions/nigelhorne/App-GHGen-5" },
-{ x: "2026-04-04T11:31:41-04:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/1d9a6a6", label: "2026-04-04T11:31:41-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #13 from nigelhorne/dependabot/github_actions/codecov/codecov-action-6" },
-{ x: "2026-06-12T11:01:49-04:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/8ec3323", label: "2026-06-12T11:01:49-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #14 from nigelhorne/dependabot/github_actions/codecov/codecov-action-7" },
-{ x: "2026-06-26T17:41:40-04:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/6cc87b0", label: "2026-06-26T17:41:40-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #15 from nigelhorne/dependabot/github_actions/actions/checkout-7" },
-{ x: "2026-07-04T08:04:37-04:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/f31613d", label: "2026-07-04T08:04:37-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #16 from nigelhorne/dependabot/github_actions/actions/cache-6" },
-{ x: "2026-07-20T21:42:23-04:00", y: 75.5656108597285, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/e7e52f8", label: "2026-07-20T21:42:23-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #17 from nigelhorne/dependabot/github_actions/nigelhorne/App-GHGen-6" } ];
 
+const dataPoints = [ { x: "2026-02-16T08:50:07-05:00", y: 87.0813397129186, delta: 0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/4443b83faa8e577fa20051c109b27ca4b42198d7", label: "2026-02-16T08:50:07-05:00", pointBackgroundColor: "gray", comment: "Fix CI" },
+{ x: "2026-02-16T09:47:34-05:00", y: 87.0813397129186, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/2b4b066a862eb2b54118b189f7833c549d69a868", label: "2026-02-16T09:47:34-05:00", pointBackgroundColor: "gray", comment: "Run pod2markdown" },
+{ x: "2026-02-16T10:31:22-05:00", y: 87.0813397129186, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/963d83a25579fb3ed1dc1d53c977b2c942098b19", label: "2026-02-16T10:31:22-05:00", pointBackgroundColor: "gray", comment: "Fix CircleCI" },
+{ x: "2026-03-23T19:38:24-04:00", y: 87.0813397129186, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/7709ab62c68de3bb01f791e10cb3a78fb1a7369e", label: "2026-03-23T19:38:24-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #12 from nigelhorne/dependabot/github_actions/nigelhorne/App-GHGen-5" },
+{ x: "2026-04-04T11:31:41-04:00", y: 87.0813397129186, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/1d9a6a68b4e65fce3a37513b8b998491a48f4e01", label: "2026-04-04T11:31:41-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #13 from nigelhorne/dependabot/github_actions/codecov/codecov-action-6" },
+{ x: "2026-06-12T11:01:49-04:00", y: 87.0813397129186, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/8ec3323a24965e249640b62b60c0752f69e7bf87", label: "2026-06-12T11:01:49-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #14 from nigelhorne/dependabot/github_actions/codecov/codecov-action-7" },
+{ x: "2026-06-26T17:41:40-04:00", y: 87.0813397129186, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/6cc87b020f3ab9855d9376d094d473ed4a7231f0", label: "2026-06-26T17:41:40-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #15 from nigelhorne/dependabot/github_actions/actions/checkout-7" },
+{ x: "2026-07-04T08:04:37-04:00", y: 87.0813397129186, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/f31613d2479a3f8d01458d174e0defbd44636a30", label: "2026-07-04T08:04:37-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #16 from nigelhorne/dependabot/github_actions/actions/cache-6" },
+{ x: "2026-07-20T21:42:23-04:00", y: 87.0813397129186, delta: 0.0, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/e7e52f8e7719605464c791fd76bd5a6c1b6740f7", label: "2026-07-20T21:42:23-04:00", pointBackgroundColor: "gray", comment: "Merge pull request #17 from nigelhorne/dependabot/github_actions/nigelhorne/App-GHGen-6" },
+{ x: "2026-07-31T10:33:21-04:00", y: 43.5406698564593, delta: -43.5, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/11648dc882246b8005fb00e38f95e0962a0e7b3d", label: "2026-07-31T10:33:21-04:00", pointBackgroundColor: "red", comment: "Merge pull request #18 from nigelhorne/dependabot/github_actions/nigelhorne/App-GHGen-7" },
+{ x: "2026-09-15T12:24:07+00:00", y: 98.6538461538462, delta: 55.1, url: "https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/0b9f4f63e825bb8141740e5cceac90833b3356cc", label: "2026-09-15T12:24:07+00:00", pointBackgroundColor: "green", comment: "Current run" } ];
 const regressionPoints = linearRegression(dataPoints);
 // Try to register the zoom plugin (handles different UMD builds)
 (function registerZoomPlugin(){
 	try {
 		const candidates = ['chartjsPluginZoom','ChartZoom','zoomPlugin','chartjs_plugin_zoom','ChartjsPluginZoom','chartjsPluginZoom'];
-		for (const name of candidates) {
-			if (window[name]) {
+		for(const name of candidates) {
+			if(window[name]) {
 				try { Chart.register(window[name]); console.log('Registered zoom plugin:', name); return; } catch(e) { console.warn('zoom register failed for', name, e); }
 			}
 		}
@@ -305,7 +310,7 @@ const chart = new Chart(ctx, {
 			}
 		}, onClick: (e) => {
 			const points = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
-			if (points.length) {
+			if(points.length) {
 				const url = chart.data.datasets[0].data[points[0].index].url;
 				window.open(url, '_blank');
 			}
@@ -322,10 +327,10 @@ document.getElementById('toggleTrend').addEventListener('change', function(e) {
 
 // Reset Zoom button handler (calls plugin API if available)
 const resetBtn = document.getElementById('resetZoomBtn');
-if (resetBtn) {
+if(resetBtn) {
 	resetBtn.addEventListener('click', function() {
 		try {
-			if (chart && typeof chart.resetZoom === 'function') {
+			if(chart && typeof chart.resetZoom === 'function') {
 				chart.resetZoom();
 			} else {
 				console.warn('resetZoom not available; zoom plugin may not be registered.');
@@ -336,9 +341,12 @@ if (resetBtn) {
 	});
 }
 
-function sortTable(th, colIndex) {
+function sortTable(th) {
+	// Always recompute colIndex from DOM so it stays correct after drag-reordering.
+	// The historic onclick="sortTable(this, N)" calls still work; the N is ignored.
+	const colIndex = Array.from(th.parentElement.cells).indexOf(th);
 	const table = th.closest("table");
-	if (!table || !table.tBodies.length) return;
+	if(!table || !table.tBodies.length) return;
 
 	const tbody = table.tBodies[0];
 	const rows = Array.from(tbody.rows);
@@ -347,25 +355,34 @@ function sortTable(th, colIndex) {
 	const prevOrder = table.getAttribute("data-sort-order") || "desc";
 	const asc = (prevCol != colIndex) ? true : (prevOrder === "desc");
 
-	const isNumeric = colIndex === 0; // Date column
+	const isDate = th.dataset.sortType === 'date';
 
 	const normalRows = rows.filter(r => !r.classList.contains("nosort"));
 	const fixedRows = rows.filter(r => r.classList.contains("nosort"));
 
 	normalRows.sort((a, b) => {
-		let x = a.cells[colIndex]?.innerText.trim() || "";
-		let y = b.cells[colIndex]?.innerText.trim() || "";
+		const cellA = a.cells[colIndex];
+		const cellB = b.cells[colIndex];
+		let x = (cellA?.dataset.value ?? cellA?.innerText ?? "").trim();
+		let y = (cellB?.dataset.value ?? cellB?.innerText ?? "").trim();
 
-		if (isNumeric) {
+		if(isDate) {
 			x = Date.parse(x) || 0;
 			y = Date.parse(y) || 0;
 		} else {
-			x = x.toLowerCase();
-			y = y.toLowerCase();
+			const nx = parseFloat(x);
+			const ny = parseFloat(y);
+			if(!isNaN(nx) && !isNaN(ny)) {
+				x = nx;
+				y = ny;
+			} else {
+				x = x.toLowerCase();
+				y = y.toLowerCase();
+			}
 		}
 
-		if (x < y) return asc ? -1 : 1;
-		if (x > y) return asc ? 1 : -1;
+		if(x < y) return asc ? -1 : 1;
+		if(x > y) return asc ? 1 : -1;
 		return 0;
 	});
 
@@ -374,11 +391,11 @@ function sortTable(th, colIndex) {
 
 	// Update arrows
 	const headers = table.tHead.rows[0].cells;
-	for (let i = 0; i < headers.length; i++) {
+	for(let i = 0; i < headers.length; i++) {
 		const arrow = headers[i].querySelector(".arrow");
-		if (!arrow) continue;
+		if(!arrow) continue;
 
-		if (i === colIndex) {
+		if(i === colIndex) {
 			arrow.textContent = asc ? "▲" : "▼";
 			arrow.classList.add("active");
 		} else {
@@ -389,34 +406,241 @@ function sortTable(th, colIndex) {
 
 	table.setAttribute("data-sort-col", colIndex);
 	table.setAttribute("data-sort-order", asc ? "asc" : "desc");
+	saveSortState(table);
 }
 
+// ---------------------------------------------------------
+// Column drag-to-reorder
+// ---------------------------------------------------------
+let _dragSrcTh = null;
+let _initializingTables = false;
+
+// ---------------------------------------------------------
+// localStorage persistence for sort state and column order
+// ---------------------------------------------------------
+function _tableId(table) {
+	return table ? table.dataset.tableId : null;
+}
+
+function saveColOrder(table) {
+	const id = _tableId(table);
+	if(!id) return;
+	const headerRow = table.tHead && table.tHead.rows[0];
+	if(!headerRow) return;
+	const order = Array.from(headerRow.cells).map(th => parseInt(th.dataset.colId, 10));
+	try { localStorage.setItem('atg_col_order_' + id, JSON.stringify(order)); } catch(e) {}
+}
+
+function saveSortState(table) {
+	if(_initializingTables) return;
+	const id = _tableId(table);
+	if(!id) return;
+	const colIdx = parseInt(table.getAttribute('data-sort-col'), 10);
+	const order  = table.getAttribute('data-sort-order') || 'asc';
+	const headerRow = table.tHead && table.tHead.rows[0];
+	if(!headerRow) return;
+	const th = headerRow.cells[colIdx];
+	const colId = th ? parseInt(th.dataset.colId, 10) : colIdx;
+	try { localStorage.setItem('atg_sort_' + id, JSON.stringify({colId, order})); } catch(e) {}
+}
+
+function _restoreColOrder(table, savedOrder) {
+	const headerRow = table.tHead && table.tHead.rows[0];
+	if(!headerRow) return;
+	const placed = new Set();
+	savedOrder.forEach((wantedId, dstPos) => {
+		const srcTh = Array.from(headerRow.cells).find(
+			th => parseInt(th.dataset.colId, 10) === wantedId && !placed.has(th)
+		);
+		if(!srcTh) return;
+		const srcIdx = Array.from(headerRow.cells).indexOf(srcTh);
+		const dstIdx = dstPos < headerRow.cells.length ? dstPos : headerRow.cells.length - 1;
+		if(srcIdx === dstIdx) { placed.add(srcTh); return; }
+		Array.from(table.rows).forEach(row => {
+			if(row.cells.length <= Math.max(srcIdx, dstIdx)) return;
+			const moved = row.cells[srcIdx];
+			const ref = row.cells[dstIdx];
+			if(srcIdx < dstIdx) row.insertBefore(moved, ref ? ref.nextSibling : null);
+			else row.insertBefore(moved, ref);
+		});
+		placed.add(srcTh);
+	});
+}
+
+function _applySort(table, th, order) {
+	// Force the desired direction then call sortTable
+	const colIndex = Array.from(th.parentElement.cells).indexOf(th);
+	// Preset state so sortTable's toggle logic lands on `order`
+	table.setAttribute('data-sort-col', colIndex === 0 ? -1 : 0); // make it differ
+	table.setAttribute('data-sort-order', order === 'asc' ? 'desc' : 'asc');
+	sortTable(th);
+}
+
+function _colDragStart(e) {
+	_dragSrcTh = this;
+	e.dataTransfer.effectAllowed = 'move';
+	e.dataTransfer.setData('text/plain', ''); // required by Firefox
+	this.classList.add('col-dragging');
+}
+
+function _colDragOver(e) {
+	if(!_dragSrcTh || _dragSrcTh === this) return;
+	e.preventDefault();
+	e.dataTransfer.dropEffect = 'move';
+}
+
+function _colDragEnter(e) {
+	if(!_dragSrcTh || _dragSrcTh === this) return;
+	// Clear previous drag-over highlight before setting the new one
+	document.querySelectorAll('th.col-drag-over').forEach(t => t.classList.remove('col-drag-over'));
+	this.classList.add('col-drag-over');
+}
+
+function _colDragLeave(e) {
+	// Only clear when leaving to something truly outside this th
+	if(!this.contains(e.relatedTarget)) {
+		this.classList.remove('col-drag-over');
+	}
+}
+
+function _colDrop(e) {
+	e.preventDefault();
+	e.stopPropagation();
+	if(!_dragSrcTh || _dragSrcTh === this) return false;
+
+	const table = this.closest('table');
+	const srcIdx = Array.from(_dragSrcTh.parentElement.cells).indexOf(_dragSrcTh);
+	const dstIdx = Array.from(this.parentElement.cells).indexOf(this);
+
+	// Move the cell at srcIdx to dstIdx in every row (thead + tbody)
+	Array.from(table.rows).forEach(row => {
+		const cells = row.cells;
+		if(cells.length <= Math.max(srcIdx, dstIdx)) return;
+		const moved = cells[srcIdx];
+		if(srcIdx < dstIdx) {
+			row.insertBefore(moved, cells[dstIdx].nextSibling);
+		} else {
+			row.insertBefore(moved, cells[dstIdx]);
+		}
+	});
+
+	// Update data-sort-col so the next sort-click knows the active column's new position
+	const activeArrow = table.querySelector('thead .arrow.active');
+	if(activeArrow) {
+		const activeTh = activeArrow.closest('th');
+		const newIdx = Array.from(activeTh.parentElement.cells).indexOf(activeTh);
+		table.setAttribute('data-sort-col', newIdx);
+	}
+
+	saveColOrder(table);
+	return false;
+}
+
+function _colDragEnd(e) {
+	this.classList.remove('col-dragging');
+	document.querySelectorAll('th.col-drag-over').forEach(t => t.classList.remove('col-drag-over'));
+	_dragSrcTh = null;
+}
 
 // Initial display.
-// The table has been set up sorted in ascending order on the filename; reflect that in the GUI
+// The coverage table is pre-sorted ascending by filename from Perl; reflect that in the GUI.
+// The mutation and duplication tables are sorted by JS on load so the arrows always match data.
+// Saved column order and sort state are restored from localStorage when present.
 document.addEventListener("DOMContentLoaded", () => {
-	const table = document.querySelector("table");
-	if (!table) return;
+	_initializingTables = true;
 
-	const headers = table.tHead.rows[0].cells;
-	for (let i = 0; i < headers.length; i++) {
-		const arrow = headers[i].querySelector(".arrow");
-		if (!arrow) continue;
+	// Assign original column indices as data-col-id (must be done before any reordering)
+	document.querySelectorAll('table[data-table-id]').forEach(table => {
+		const headerRow = table.tHead && table.tHead.rows[0];
+		if(!headerRow) return;
+		Array.from(headerRow.cells).forEach((th, i) => { th.dataset.colId = i; });
+	});
 
-		if (i === 0) {
-			arrow.textContent = "▲";
-			arrow.classList.add("active");
-		} else {
-			arrow.textContent = "▲";
-			arrow.classList.remove("active");
+	// Restore saved column order, then sort state, for every identified table
+	document.querySelectorAll('table[data-table-id]').forEach(table => {
+		const id = _tableId(table);
+		// --- column order ---
+		let savedOrder = null;
+		try { savedOrder = JSON.parse(localStorage.getItem('atg_col_order_' + id)); } catch(e) {}
+		if(Array.isArray(savedOrder) && savedOrder.length) {
+			_restoreColOrder(table, savedOrder);
+		}
+
+		// --- sort state ---
+		let savedSort = null;
+		try { savedSort = JSON.parse(localStorage.getItem('atg_sort_' + id)); } catch(e) {}
+		if(savedSort && typeof savedSort.colId === 'number') {
+			const headerRow = table.tHead && table.tHead.rows[0];
+			const th = headerRow && Array.from(headerRow.cells).find(
+				c => parseInt(c.dataset.colId, 10) === savedSort.colId
+			);
+			if(th) {
+				_applySort(table, th, savedSort.order || 'asc');
+				return; // done with this table
+			}
+		}
+
+		// No saved sort — apply defaults
+		if(table.classList.contains('mut-table')) {
+			// Score% column (original col 5)
+			const headerRow = table.tHead && table.tHead.rows[0];
+			const th = headerRow && Array.from(headerRow.cells).find(
+				c => parseInt(c.dataset.colId, 10) === 5
+			);
+			if(th) _applySort(table, th, 'asc');
+		} else if(table.classList.contains('dup-table')) {
+			// File column (original col 0)
+			const headerRow = table.tHead && table.tHead.rows[0];
+			const th = headerRow && Array.from(headerRow.cells).find(
+				c => parseInt(c.dataset.colId, 10) === 0
+			);
+			if(th) _applySort(table, th, 'asc');
+		} else if(table.classList.contains('sortable-table') && !table.classList.contains('mut-table') && !table.classList.contains('dup-table')) {
+			// CPAN Testers: sort by Date (original col 0) ascending
+			const headerRow = table.tHead && table.tHead.rows[0];
+			const th = headerRow && Array.from(headerRow.cells).find(
+				c => parseInt(c.dataset.colId, 10) === 0
+			);
+			if(th) _applySort(table, th, 'asc');
+		}
+	});
+
+	// Coverage table: pre-sorted ascending by File (col 0) from Perl — just update arrows
+	const covTable = document.querySelector("table[data-table-id='coverage']");
+	if(covTable && covTable.tHead) {
+		const id = _tableId(covTable);
+		let savedSort = null;
+		try { savedSort = JSON.parse(localStorage.getItem('atg_sort_' + id)); } catch(e) {}
+		if(!savedSort) {
+			const headers = covTable.tHead.rows[0].cells;
+			for(let i = 0; i < headers.length; i++) {
+				const arrow = headers[i].querySelector(".arrow");
+				if(!arrow) continue;
+				arrow.textContent = "▲";
+				arrow.classList.toggle("active", i === 0);
+			}
 		}
 	}
+
+	_initializingTables = false;
+
+	// Wire up drag-to-reorder on every sortable column header
+	document.querySelectorAll('th.sortable').forEach(th => {
+		th.setAttribute('draggable', 'true');
+		th.title = (th.title ? th.title + ' · ' : '') + 'Drag to reorder columns';
+		th.addEventListener('dragstart',  _colDragStart);
+		th.addEventListener('dragover',   _colDragOver);
+		th.addEventListener('dragenter',  _colDragEnter);
+		th.addEventListener('dragleave',  _colDragLeave);
+		th.addEventListener('drop',       _colDrop);
+		th.addEventListener('dragend',    _colDragEnd);
+	});
 });
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.querySelectorAll("canvas.sparkline").forEach(canvas => {
 		const raw = canvas.getAttribute("data-points");
-		if (!raw) return;
+		if(!raw) return;
 		const points = raw.split(",").map(v => parseFloat(v));
 
 		new Chart(canvas.getContext("2d"), {
@@ -466,12 +690,6 @@ function refresh(){
 <p><center>Use mouse wheel or pinch to zoom; drag to pan</center></p>
 <p>No issues active on <a href="https://rt.cpan.org/Public/Dist/Display.html?Name=Genealogy-Obituary-Lookup">RT</a></p>
 <h2>CPAN Testers Failures for Genealogy-Obituary-Lookup 0.20</h2>
-<h3>Failure Summary</h3>
-<ul>
-<li><b>Perl 5.43.x</b>: 22 failures</li>
-<li><b>linux</b>: 33 failures</li>
-<li><b>5.43 / linux</b>: 7 failures</li>
-</ul>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 	const toggleFail = document.getElementById('toggleFail');
@@ -482,7 +700,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	function update() {
 		document.querySelectorAll('tr').forEach(row => {
 			// Skip header rows
-			if (row.querySelector('th')) return;
+			if(row.querySelector('th')) return;
 
 			// Determine row status
 			const isFail = row.classList.contains('cpan-fail');
@@ -493,26 +711,23 @@ document.addEventListener("DOMContentLoaded", function () {
 			// Decide whether to show the row
 			let show = true;
 
-			if (toggleFail && !toggleFail.checked && isFail) show = false;
-			if (toggleUnknown && !toggleUnknown.checked && isUnknown) show = false;
-			if (toggleNA && !toggleNA.checked && isNA) show = false;
-			if (toggleNew && toggleNew.checked && !isNew) show = false;
+			if(toggleFail && !toggleFail.checked && isFail) show = false;
+			if(toggleUnknown && !toggleUnknown.checked && isUnknown) show = false;
+			if(toggleNA && !toggleNA.checked && isNA) show = false;
+			if(toggleNew && toggleNew.checked && !isNew) show = false;
 
 			row.style.display = show ? '' : 'none';
 		});
 	}
 
 	[toggleFail, toggleUnknown, toggleNA, toggleNew].forEach(cb => {
-		if (cb) cb.addEventListener('change', update);
+		if(cb) cb.addEventListener('change', update);
 	});
 
 	update();
 });
-document.addEventListener("DOMContentLoaded", () => {
-	const th = document.querySelector("table.sortable-table th");
-	if (th) sortTable(th, 0);
-});
 </script>
+
 
 <p><em>Showing one failure per OS/Perl combination.</em></p>
 <div style="margin-bottom: 0.5em;">
@@ -529,16 +744,15 @@ document.addEventListener("DOMContentLoaded", () => {
 		NA
 	</label>
 	<label style="margin-left: 1em;">
-	<label style="margin-left: 1em;">
 		<input type="checkbox" id="toggleNew">
 		NEW only
 	</label>
 </div>
 
-<table class="sortable-table" data-sort-col="0" data-sort-order="asc">
+<table class="sortable-table" data-sort-col="0" data-sort-order="asc" data-table-id="cpan">
 <thead>
 <tr>
-	<th class="sortable" onclick="sortTable(this, 0)">
+	<th class="sortable" onclick="sortTable(this, 0)" data-sort-type="date">
 		<span class="label">Date</span> <span class="arrow">&#x25B2;</span>
 	</th>
 	<th class="sortable" onclick="sortTable(this, 1)">
@@ -554,117 +768,168 @@ document.addEventListener("DOMContentLoaded", () => {
 		<span class="label">New</span> <span class="arrow">&#x25B2;</span>
 	</th>
 	<th>Report</th>
+	<th>Repro</th>
 </tr>
 </thead>
 <tbody>
 
-<tr class="cpan-fail"><td>2026-05-03T00:12:00Z</td><td>dragonfly</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/d5ec0156-4684-11f1-a986-8522c11c92b9" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-02-26T18:16:00Z</td><td>linux</td><td>5.43.8</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/41606bb2-133f-11f1-825b-e60fe07e9172" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T03:04:00Z</td><td>linux</td><td>5.32.1</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/a4067eca-9697-11f0-a87f-ed2ddde4e16c" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T05:42:00Z</td><td>linux</td><td>5.36.3</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/be883d18-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T03:02:00Z</td><td>linux</td><td>5.34.0</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/5b0a0ad4-9697-11f0-8d8e-c00c737033d0" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-05-12T18:49:00Z</td><td>linux</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/55b6cf5a-4e33-11f1-9a12-ee4e9225429f" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-04-25T03:03:00Z</td><td>dragonfly</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/54d1b91c-4053-11f1-a921-e386783849d5" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-04-18T14:31:00Z</td><td>freebsd</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/4b0aefcc-3b33-11f1-b020-955247435029" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T02:38:00Z</td><td>linux</td><td>5.40.2</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/0215f0f8-9694-11f0-8431-809d8b36324e" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-05-06T16:50:00Z</td><td>linux</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/a218b696-496b-11f1-9618-a411a80644de" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-25T05:48:00Z</td><td>freebsd</td><td>5.42.0</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/382a7406-99d3-11f0-a85a-1b106e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-04-20T03:57:00Z</td><td>linux</td><td>5.40.4</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/130f9fba-3c6d-11f1-95b9-de7f4bc9d799" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-04-30T19:24:00Z</td><td>netbsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/3dc7d082-44ca-11f1-857a-c40d5dce1649" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-04-22T07:26:00Z</td><td>solaris</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/8aff5d02-3e1c-11f1-80f5-c78cc0cf2249" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-23T18:05:00Z</td><td>linux</td><td>5.40.0</td><td>Nigel Horne</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/dcfaa82a-98a7-11f0-9665-9d6c66977ba7" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-04-19T15:11:00Z</td><td>midnightbsd</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/13637f24-3c02-11f1-8753-b31d82a1abb5" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T05:40:00Z</td><td>linux</td><td>5.40.0</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/8baca21c-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-27T18:37:00Z</td><td>linux</td><td>5.36.0</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/f547d7f0-9bd0-11f0-b74a-57296e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-05-08T03:04:00Z</td><td>linux</td><td>5.43.10</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/ae531008-4a8a-11f1-823a-e4b1b9eacd53" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.24.4</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/a5b13f9c-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-04-23T20:40:00Z</td><td>solaris</td><td>5.42.2</td><td>Nigel Horne</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/a718aa3c-3f54-11f1-88ad-ab9cf99f21d5" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T02:59:00Z</td><td>linux</td><td>5.36.1</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/f5c657fe-9696-11f0-9610-8a4ec46c134a" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.32.1</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/a9dd8666-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-27T18:36:00Z</td><td>linux</td><td>5.34.1</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/eb644778-9bd0-11f0-b74a-57296e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T02:44:00Z</td><td>linux</td><td>5.40.1</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/e0ed6d6a-9694-11f0-9697-a34a7951c4f2" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-05-09T07:25:00Z</td><td>freebsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/41761018-4b78-11f1-8c56-adc6a07bf40e" target="_blank">View</a></td></tr>
-<tr class="cpan-unknown"><td>2026-01-26T14:35:00Z</td><td>darwin</td><td>5.42.0</td><td>Nigel Horne</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/4bc84c8e-fac4-11f0-872d-cd71f0c5ed8f" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-04-24T12:46:00Z</td><td>freebsd</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/951dfada-3fdb-11f1-8e57-dc5bb5702fbe" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T03:10:00Z</td><td>linux</td><td>5.28.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/95ba8f40-9698-11f0-b6ba-9b5fbb94b6c5" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-04-22T01:21:00Z</td><td>linux</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/a622b01c-3de9-11f1-96df-91f0fddc64f2" target="_blank">View</a></td></tr>
 <tr class="cpan-fail"><td>2025-09-21T02:33:00Z</td><td>linux</td><td>5.38.4</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/650fd53a-9693-11f0-8bb6-d6db95b5b7ae" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-05-06T04:43:00Z</td><td>openbsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/15bcd138-4906-11f1-9908-e601208da51a" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-07-04T22:42:00Z</td><td>linux</td><td>5.44.0 RC1</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/b0ef69c8-77f9-11f1-b73a-21df6d8775ea" target="_blank">View</a></td></tr>
+				<td><a href="https://www.cpantesters.org/cpan/report/650fd53a-9693-11f0-8bb6-d6db95b5b7ae" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-05-12T18:49:00Z</td><td>linux</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/55b6cf5a-4e33-11f1-9a12-ee4e9225429f" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.24.4</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a5b13f9c-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-05-06T16:50:00Z</td><td>linux</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a218b696-496b-11f1-9618-a411a80644de" target="_blank">View</a></td><td></td></tr>
 <tr class="cpan-fail"><td>2026-05-07T10:39:00Z</td><td>netbsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/0f1d1346-4a01-11f1-8c97-fe65ae3b6ea9" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T03:21:00Z</td><td>linux</td><td>5.20.2</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/097efff0-969a-11f0-bccb-f8de635dc590" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-05-13T05:18:00Z</td><td>midnightbsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/2b4f069e-4e8b-11f1-b92f-b36d7f1ce58f" target="_blank">View</a></td></tr>
+				<td><a href="https://www.cpantesters.org/cpan/report/0f1d1346-4a01-11f1-8c97-fe65ae3b6ea9" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.42.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/af5a44a8-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td><td></td></tr>
 <tr class="cpan-fail"><td>2026-04-22T22:37:00Z</td><td>linux</td><td>5.42.2</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/d8257eca-3e9b-11f1-ad5a-ea34fceecc47" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T02:41:00Z</td><td>linux</td><td>5.38.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/6ccc582e-9694-11f0-b74a-cff126171618" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T03:07:00Z</td><td>linux</td><td>5.28.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/14fb96ec-9698-11f0-968e-f8fd9fef238b" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T02:42:00Z</td><td>linux</td><td>5.38.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/a4f1211c-9694-11f0-a09b-ef6ca43470a6" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.36.3</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/95011c62-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-02-12T06:54:00Z</td><td>linux</td><td>5.43.7</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/b850b9ea-07df-11f1-aa21-b05cca3cc33a" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.42.0</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/af5a44a8-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T05:40:00Z</td><td>linux</td><td>5.38.2</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/8621656c-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-12-29T16:53:00Z</td><td>linux</td><td>5.43.6</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/eafd50aa-e4d6-11f0-b781-90ed3920828c" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2026-05-03T10:51:00Z</td><td>solaris</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/f963159e-46dd-11f1-96cb-e78e3e30aee2" target="_blank">View</a></td></tr>
-<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.42.0</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/9d81c54e-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+				<td><a href="https://www.cpantesters.org/cpan/report/d8257eca-3e9b-11f1-ad5a-ea34fceecc47" target="_blank">View</a></td><td></td></tr>
 <tr class="cpan-fail"><td>2025-09-21T05:42:00Z</td><td>linux</td><td>5.38.4</td><td>Slaven Rezi&#x107;</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/b4d47868-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td></tr>
+				<td><a href="https://www.cpantesters.org/cpan/report/b4d47868-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-08-22T01:27:00Z</td><td>darwin</td><td>5.38.0</td><td>Nigel Horne</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/9c0594e8-9dc8-11f1-88da-cd8068b77b84" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.32.1</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a9dd8666-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td><td></td></tr>
 <tr class="cpan-fail"><td>2026-04-30T02:02:00Z</td><td>openbsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/93bbef2e-4438-11f1-9047-fed59abb1a50" target="_blank">View</a></td></tr>
+				<td><a href="https://www.cpantesters.org/cpan/report/93bbef2e-4438-11f1-9047-fed59abb1a50" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-04-25T03:03:00Z</td><td>dragonfly</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/54d1b91c-4053-11f1-a921-e386783849d5" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-08-22T20:26:00Z</td><td>linux</td><td>5.45.2</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/ce1f2b70-9e67-11f1-94a9-9973aff9ede3" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-05-08T03:04:00Z</td><td>linux</td><td>5.43.10</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/ae531008-4a8a-11f1-823a-e4b1b9eacd53" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-07-04T22:42:00Z</td><td>linux</td><td>5.44.0 RC1</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/b0ef69c8-77f9-11f1-b73a-21df6d8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-27T18:37:00Z</td><td>linux</td><td>5.36.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/f547d7f0-9bd0-11f0-b74a-57296e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-23T18:05:00Z</td><td>linux</td><td>5.40.0</td><td>Nigel Horne</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/dcfaa82a-98a7-11f0-9665-9d6c66977ba7" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:40:00Z</td><td>linux</td><td>5.38.2</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/8621656c-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-unknown"><td>2026-01-26T14:35:00Z</td><td>darwin</td><td>5.42.0</td><td>Nigel Horne</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/4bc84c8e-fac4-11f0-872d-cd71f0c5ed8f" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:38:00Z</td><td>linux</td><td>5.40.2</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/0215f0f8-9694-11f0-8431-809d8b36324e" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-04-23T20:40:00Z</td><td>solaris</td><td>5.42.2</td><td>Nigel Horne</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a718aa3c-3f54-11f1-88ad-ab9cf99f21d5" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:59:00Z</td><td>linux</td><td>5.36.1</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/f5c657fe-9696-11f0-9610-8a4ec46c134a" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-12-29T16:53:00Z</td><td>linux</td><td>5.43.6</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/eafd50aa-e4d6-11f0-b781-90ed3920828c" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:10:00Z</td><td>linux</td><td>5.28.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/95ba8f40-9698-11f0-b6ba-9b5fbb94b6c5" target="_blank">View</a></td><td></td></tr>
 <tr class="cpan-fail"><td>2026-05-20T01:31:00Z</td><td>solaris</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/97fa15c6-53eb-11f1-803a-c5b22d1be9c4" target="_blank">View</a></td></tr>
+				<td><a href="https://www.cpantesters.org/cpan/report/97fa15c6-53eb-11f1-803a-c5b22d1be9c4" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:41:00Z</td><td>linux</td><td>5.38.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/6ccc582e-9694-11f0-b74a-cff126171618" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-05-03T00:12:00Z</td><td>dragonfly</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/d5ec0156-4684-11f1-a986-8522c11c92b9" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-04-30T19:24:00Z</td><td>netbsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/3dc7d082-44ca-11f1-857a-c40d5dce1649" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-05-09T07:25:00Z</td><td>freebsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/41761018-4b78-11f1-8c56-adc6a07bf40e" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-04-22T07:26:00Z</td><td>solaris</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/8aff5d02-3e1c-11f1-80f5-c78cc0cf2249" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-02-26T18:16:00Z</td><td>linux</td><td>5.43.8</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/41606bb2-133f-11f1-825b-e60fe07e9172" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-05-13T05:18:00Z</td><td>midnightbsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/2b4f069e-4e8b-11f1-b92f-b36d7f1ce58f" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-04-24T12:46:00Z</td><td>freebsd</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/951dfada-3fdb-11f1-8e57-dc5bb5702fbe" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:40:00Z</td><td>linux</td><td>5.40.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/8baca21c-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.36.3</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/95011c62-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:21:00Z</td><td>linux</td><td>5.20.2</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/097efff0-969a-11f0-bccb-f8de635dc590" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-04-19T15:11:00Z</td><td>midnightbsd</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/13637f24-3c02-11f1-8753-b31d82a1abb5" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:07:00Z</td><td>linux</td><td>5.28.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/14fb96ec-9698-11f0-968e-f8fd9fef238b" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-02-12T06:54:00Z</td><td>linux</td><td>5.43.7</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/b850b9ea-07df-11f1-aa21-b05cca3cc33a" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:42:00Z</td><td>linux</td><td>5.38.3</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a4f1211c-9694-11f0-a09b-ef6ca43470a6" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T02:44:00Z</td><td>linux</td><td>5.40.1</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/e0ed6d6a-9694-11f0-9697-a34a7951c4f2" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-05-06T04:43:00Z</td><td>openbsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/15bcd138-4906-11f1-9908-e601208da51a" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:42:00Z</td><td>linux</td><td>5.36.3</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/be883d18-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-04-18T14:31:00Z</td><td>freebsd</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/4b0aefcc-3b33-11f1-b020-955247435029" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-25T05:48:00Z</td><td>freebsd</td><td>5.42.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/382a7406-99d3-11f0-a85a-1b106e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:02:00Z</td><td>linux</td><td>5.34.0</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/5b0a0ad4-9697-11f0-8d8e-c00c737033d0" target="_blank">View</a></td><td></td></tr>
 <tr class="cpan-fail"><td>2026-05-18T03:10:00Z</td><td>freebsd</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
-				<td><a href="https://www.cpantesters.org/cpan/report/212ddb56-5267-11f1-9438-8ec9287ccb1e" target="_blank">View</a></td></tr>
+				<td><a href="https://www.cpantesters.org/cpan/report/212ddb56-5267-11f1-9438-8ec9287ccb1e" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-05-03T10:51:00Z</td><td>solaris</td><td>5.43.11</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/f963159e-46dd-11f1-96cb-e78e3e30aee2" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T05:41:00Z</td><td>linux</td><td>5.42.0</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/9d81c54e-96ad-11f0-94c6-d8366e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-04-20T03:57:00Z</td><td>linux</td><td>5.40.4</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/130f9fba-3c6d-11f1-95b9-de7f4bc9d799" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-04-22T01:21:00Z</td><td>linux</td><td>5.43.10</td><td>Carlos Guevara</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a622b01c-3de9-11f1-96df-91f0fddc64f2" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-21T03:04:00Z</td><td>linux</td><td>5.32.1</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/a4067eca-9697-11f0-a87f-ed2ddde4e16c" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2025-09-27T18:36:00Z</td><td>linux</td><td>5.34.1</td><td>Slaven Rezi&#x107;</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/eb644778-9bd0-11f0-b74a-57296e8775ea" target="_blank">View</a></td><td></td></tr>
+<tr class="cpan-fail"><td>2026-09-07T12:18:00Z</td><td>linux</td><td>5.45.2</td><td>Andreas J. K&ouml;nig (ANDK)</td><td></td>
+				<td><a href="https://www.cpantesters.org/cpan/report/43ed4ecc-aab6-11f1-8baa-ad702c8a820c" target="_blank">View</a></td><td></td></tr>
 </tbody></table>
+<h2>Mutation Report</h2>
+<h3>Mutation Summary</h3>
+<ul>
+<li><b>Score</b>: 100%</li>
+<li><b>Total</b>: 0</li>
+<li><b>Killed</b>: 
+0
+</li>
+<li><b>Survived</b>: 
+0
+</li>
+<li><b>Duplication</b>: no duplicate code blocks detected</li>
+</ul>
+<h3>Mutation Files</h3>
+
+<table border='1' cellpadding='5' class="sortable-table mut-table" data-sort-col="5" data-sort-order="asc" data-table-id="mut">
+
+<thead>
+<tr>
+<th class="sortable" onclick="sortTable(this, 0)"><span class="label">File</span> <span class="arrow">&#x25B2;</span></th>
+<th class="sortable" onclick="sortTable(this, 1)"><span class="label">Total</span> <span class="arrow">&#x25B2;</span></th>
+<th class="sortable" onclick="sortTable(this, 2)"><span class="label">Killed</span> <span class="arrow">&#x25B2;</span></th>
+<th class="sortable" onclick="sortTable(this, 3)"><span class="label">Survivors</span> <span class="arrow">&#x25B2;</span></th>
+<th class="sortable" onclick="sortTable(this, 4)"><span class="label">Skipped</span> <span class="arrow">&#x25B2;</span></th>
+<th class="sortable" onclick="sortTable(this, 5)"><span class="label">Score%</span> <span class="arrow active">&#x25B2;</span></th>
+<th class="sortable" onclick="sortTable(this, 6)"><span class="label">Complexity</span> <span class="arrow">&#x25B2;</span></th>
+<th class="sortable" onclick="sortTable(this, 7)" title="TER1=Statement, TER2=Branch, TER3=LCSAJ Path"><span class="label">TER1 / TER2 / TER3</span> <span class="arrow">&#x25B2;</span></th>
+<th class="sortable" onclick="sortTable(this, 8)"><span class="label">Dup%</span> <span class="arrow">&#x25B2;</span></th>
+</tr>
+</thead>
+<tbody>
+
+</tbody></table>
+
+<h2>Structural Coverage (Approximate)</h2>
+<div class='summary'>
+Statement Coverage: 100.00% (144 / 144)<br>
+Branch Coverage: 92.19% (59 / 64)<br>
+<em>Approximate LCSAJ derived from branch and statement coverage.</em>
+</div>
+<h2>Executive Summary</h2>
+<div class='summary'>
+Tests execute 100.00% of the code. No mutation data available yet — trigger the mutation workflow for fault detection analysis.
+</div>
 <footer>
 	<p>Project: <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup">Genealogy-Obituary-Lookup</a></p>
-	<p><em>Last updated: 2026-07-31 14:37:44 - <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/11648dc882246b8005fb00e38f95e0962a0e7b3d">commit <code>11648dc</code></a></em></p>
+	<p><em>Last updated: 2026-09-15 12:23:52 - <a href="https://github.com/nigelhorne/Genealogy-Obituary-Lookup/commit/0b9f4f63e825bb8141740e5cceac90833b3356cc">commit <code>0b9f4f6</code></a></em></p>
+	<p style="float: right; font-size: 0.85em; color: #999;">Powered by <a href="https://metacpan.org/dist/App-Test-Generator">App::Test::Generator 0.46</a></p>
 </footer>
-
 </body>
 </html>
