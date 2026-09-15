@@ -26,10 +26,10 @@ https://pjcj.net
 <table>
 <tr><th>line</th><th>stmt</th><th>bran</th><th>cond</th><th>sub</th><th>time</th><th>code</th></tr>
 <tr><td class="h">1</td><td></td><td></td><td></td><td></td><td></td><td class="s">package Genealogy::Obituary::Lookup::obituaries;</td></tr>
-<tr><td class="h">2</td><td colspan="6"></td></tr><tr><td class="h">3</td><td><div class="c3">15</div><div class="c3">15</div><div class="c3">15</div></td><td></td><td></td><td><div class="c3"><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm--subroutine.html#L3">15</a></div></td><td><div>37</div><div>8</div><div>195</div></td><td class="s">use strict;</td></tr>
-<tr><td class="h">4</td><td><div class="c3">15</div><div class="c3">15</div><div class="c3">15</div></td><td></td><td></td><td><div class="c3"><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm--subroutine.html#L4">15</a></div></td><td><div>22</div><div>11</div><div>293</div></td><td class="s">use warnings;</td></tr>
-<tr><td class="h">5</td><td><div class="c3">15</div><div class="c3">15</div><div class="c3">15</div></td><td></td><td></td><td><div class="c3"><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm--subroutine.html#L5">15</a></div></td><td><div>24</div><div>9</div><div>29</div></td><td class="s">use autodie qw(:all);</td></tr>
-<tr><td class="h">6</td><td colspan="6"></td></tr><tr><td class="h">7</td><td><div class="c3">15</div><div class="c3">15</div><div class="c3">15</div></td><td></td><td></td><td><div class="c3"><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm--subroutine.html#L7">15</a></div></td><td><div>37285</div><div>1121318</div><div>32</div></td><td class="s">use Database::Abstraction;</td></tr>
+<tr><td class="h">2</td><td colspan="6"></td></tr><tr><td class="h">3</td><td><div class="c3">15</div><div class="c3">15</div><div class="c3">15</div></td><td></td><td></td><td><div class="c3"><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm--subroutine.html#L3">15</a></div></td><td><div>26</div><div>10</div><div>137</div></td><td class="s">use strict;</td></tr>
+<tr><td class="h">4</td><td><div class="c3">15</div><div class="c3">15</div><div class="c3">15</div></td><td></td><td></td><td><div class="c3"><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm--subroutine.html#L4">15</a></div></td><td><div>19</div><div>10</div><div>226</div></td><td class="s">use warnings;</td></tr>
+<tr><td class="h">5</td><td><div class="c3">15</div><div class="c3">15</div><div class="c3">15</div></td><td></td><td></td><td><div class="c3"><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm--subroutine.html#L5">15</a></div></td><td><div>17</div><div>8</div><div>38</div></td><td class="s">use autodie qw(:all);</td></tr>
+<tr><td class="h">6</td><td colspan="6"></td></tr><tr><td class="h">7</td><td><div class="c3">15</div><div class="c3">15</div><div class="c3">15</div></td><td></td><td></td><td><div class="c3"><a href="blib-lib-Genealogy-Obituary-Lookup-obituaries-pm--subroutine.html#L7">15</a></div></td><td><div>29303</div><div>883516</div><div>42</div></td><td class="s">use Database::Abstraction;</td></tr>
 <tr><td class="h">8</td><td colspan="6"></td></tr><tr><td class="h">9 - 17</td><td colspan="5"></td><td class="s"><pre>=head1 NAME
 
 Genealogy::Obituary::Lookup::obituaries - SQLite driver for the obituary database
@@ -41,10 +41,11 @@ Version 0.21
 =cut</pre></td></tr>
 <tr><td class="h">18</td><td colspan="6"></td></tr><tr><td class="h">19</td><td></td><td></td><td></td><td></td><td></td><td class="s">our $VERSION = &#39;0.21&#39;;</td></tr>
 <tr><td class="h">20</td><td colspan="6"></td></tr><tr><td class="h">21</td><td></td><td></td><td></td><td></td><td></td><td class="s">our @ISA = (&#39;Database::Abstraction&#39;);</td></tr>
-<tr><td class="h">22</td><td colspan="6"></td></tr><tr><td class="h">23 - 65</td><td colspan="5"></td><td class="s"><pre>=head1 SYNOPSIS
+<tr><td class="h">22</td><td colspan="6"></td></tr><tr><td class="h">23 - 66</td><td colspan="5"></td><td class="s"><pre>=head1 SYNOPSIS
 
 This module is not intended to be used directly.&nbsp;&nbsp;It is instantiated
-internally by L&lt;Genealogy::Obituary::Lookup&gt;.
+internally by L&lt;Genealogy::Obituary::Lookup&gt;
+as a driver to access the C&lt;obituaries.sql&gt; file.
 
 &nbsp;&nbsp;&nbsp;&nbsp;use Genealogy::Obituary::Lookup;
 &nbsp;&nbsp;&nbsp;&nbsp;my $obits = Genealogy::Obituary::Lookup-&gt;new();
@@ -84,7 +85,7 @@ Nigel Horne, C&lt;&lt; &lt;njh at nigelhorne.com&gt; &gt;&gt;
 Copyright 2020-2026 Nigel Horne.&nbsp;&nbsp;Released under GPL2.
 
 =cut</pre></td></tr>
-<tr><td class="h">66</td><td colspan="6"></td></tr><tr><td class="h">67</td><td></td><td></td><td></td><td></td><td></td><td class="s">1;</td></tr>
+<tr><td class="h">67</td><td colspan="6"></td></tr><tr><td class="h">68</td><td></td><td></td><td></td><td></td><td></td><td class="s">1;</td></tr>
 </table>
 </body>
 </html>
