@@ -520,13 +520,15 @@ This module is provided as-is without any warranty.
     𝒏𝒆𝒘 : Class × Args → (Object ∪ {⊥})
 
     𝒏𝒆𝒘(C, A) ≙
-      let D = A.directory ∨ module_data_path(C)
+      let D = A.directory ∨ dir_cache(C)        { dir_cache memoises module_data_path(C) }
       in  A.logger ≠ ∅ ∧ ¬(can(A.logger,'info') ∧
                             can(A.logger,'error'))               ⟹ abort
         ∥  is_string(D) ∧ null_byte(D)                          ⟹ ⊥
         ∥  is_string(D) ⟹ D ← untaint(D)          { guaranteed: no null bytes }
         ∥  ¬readable(D)                                         ⟹ ⊥
         ∥  otherwise   ⟹ ⟨ cache_duration ↦ DEFAULT_CACHE_DURATION ⟩ ⊕ A
+
+    where  dir_cache(C) ≙ state map C ↦ module_data_path(C)    { per-class, per-process }
 
 ## search
 
@@ -539,38 +541,10 @@ This module is provided as-is without any warranty.
 
     where  add_url(o) ≙ o ⊕ ⟨ url ↦ _create_url(o) ⟩
 
-## \_create\_url (private)
-
-    𝒄𝒓𝒆𝒂𝒕𝒆_𝒖𝒓𝒍 : Obit → URL
-
-    𝒄𝒓𝒆𝒂𝒕𝒆_𝒖𝒓𝒍(o) ≙
-      pre  o.page ≠ ⊥ ∧ o.source ≠ ⊥
-      post o.source ∈ {M,F}
-             ⟹ URLS[o.source] ++ o.page
-         ∥ o.source = L ∧ o.newspaper =~ m{^https?://}
-             ⟹ o.newspaper
-         ∥ o.source = L ∧ o.page =~ m{^https?://}
-             ⟹ o.page
-         ∥ o.source = L
-             ⟹ abort err_no_newspaper
-         ∥ otherwise
-             ⟹ abort err_bad_source
-
-## \_i18n (private)
-
-    𝒊𝟏𝟖𝒏 : (Class ∪ Object) × Key × Args → String
-
-    𝒊𝟏𝟖𝒏(_, k, A) ≙
-      pre  k ∈ dom MESSAGES
-      let  tpl = MESSAGES[k]
-           sub = { n ↦ A(n) ∨ "" | n ∈ placeholders(tpl) }
-      post tpl with each %{n} replaced by sub(n)
-         ∥ k ∉ dom MESSAGES ⟹ abort "Unknown i18n key k"
-
-    where  placeholders(t) ≙ { n | t =~ m/%\{(n)\}/g }
-
 # LICENSE AND COPYRIGHT
 
 Copyright 2020-2026 Nigel Horne.
 
-This program is released under the following licence: GPL2
+Usage is subject to the GPL2 licence terms.
+If you use it,
+please let me know.

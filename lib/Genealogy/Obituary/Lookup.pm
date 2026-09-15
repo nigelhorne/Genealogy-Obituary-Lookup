@@ -3,6 +3,7 @@ package Genealogy::Obituary::Lookup;
 use warnings;
 use strict;
 use autodie qw(:all);
+use feature 'state';
 
 use Carp;
 use Data::Reuse;
@@ -269,14 +270,23 @@ sub new
 	# Merge configuration file settings (YAML / XML / INI) into %args
 	%args = %{Object::Configure::configure($class_in, \%args)};
 
-	# Resolve the data directory, falling back to the module's own data/ subdirectory
+	# Resolve the data directory, falling back to the module's own data/ subdirectory.
+	# Cache the lookup per class: Module::Info scans %INC and stats the filesystem;
+	# the result is stable for the process lifetime.
+	state %_dir_cache;
 	unless(defined $args{'directory'}) {
-		my $info = Module::Info->new_from_loaded($class_in);
-		if(defined $info) {
-			(my $base = $info->file()) =~ s/\.pm$//;
-			my $derived = File::Spec->catfile($base, 'data');
-			$args{'directory'} = $derived if -d $derived;
+		unless(exists $_dir_cache{$class_in}) {
+			my $info = Module::Info->new_from_loaded($class_in);
+			my $derived;
+			if(defined $info) {
+				(my $base = $info->file()) =~ s/\.pm$//;
+				$derived = File::Spec->catfile($base, 'data');
+				$derived = undef unless -d $derived;
+			}
+			$_dir_cache{$class_in} = $derived;
 		}
+		$args{'directory'} = $_dir_cache{$class_in}
+			if defined $_dir_cache{$class_in};
 	}
 
 	# Premise: directory, if provided, must be a plain string (not a ref).
@@ -555,8 +565,11 @@ sub search
 	if(wantarray) {
 		my $obituaries = $self->{'obituaries'}->selectall_hashref($params)
 			or return;
-		my @rc = grep { defined } @{$obituaries};
-		for my $obit (@rc) {
+		# Iterate the arrayref directly (no intermediate grep list) and filter
+		# undef slots inline — eliminates one O(N) allocation for large result sets.
+		my @rc;
+		for my $obit (@{$obituaries}) {
+			next unless defined $obit;
 			$obit->{'url'} = _create_url($obit);
 			# Intern string values in the hash to reduce memory for repeated
 			# strings (source, place, newspaper) across large result sets.
@@ -565,6 +578,7 @@ sub search
 			# second fixate call would otherwise die with "Modification of a
 			# read-only value".  Silently tolerate that case.
 			{ local $@; eval { Data::Reuse::fixate(%{$obit}) } };
+			push @rc, $obit;
 		}
 		return @rc;
 	}
@@ -626,6 +640,10 @@ sub _create_url
 # Exit:       Formatted string.
 sub _i18n
 {
+	# TODO: CLAUDE.md violation — _i18n() is missing the required caller() privacy
+	# guard.  Adding it breaks t/function.t, t/path.t, t/edge_cases.t, and
+	# t/data-flow.t, which call _i18n() directly.  Those tests must be refactored
+	# to call through the public API before the guard can be re-introduced.
 	# TODO: Data Flow Anomaly - $self_or_class defined (D) but never used (D~ dead store; reserved for future per-instance locale selection)
 	my ($self_or_class, $key, $args) = @_;
 	my $tpl = $MESSAGES{$key}
@@ -826,13 +844,15 @@ This module is provided as-is without any warranty.
   𝒏𝒆𝒘 : Class × Args → (Object ∪ {⊥})
 
   𝒏𝒆𝒘(C, A) ≙
-    let D = A.directory ∨ module_data_path(C)
+    let D = A.directory ∨ dir_cache(C)        { dir_cache memoises module_data_path(C) }
     in  A.logger ≠ ∅ ∧ ¬(can(A.logger,'info') ∧
                           can(A.logger,'error'))               ⟹ abort
       ∥  is_string(D) ∧ null_byte(D)                          ⟹ ⊥
       ∥  is_string(D) ⟹ D ← untaint(D)          { guaranteed: no null bytes }
       ∥  ¬readable(D)                                         ⟹ ⊥
       ∥  otherwise   ⟹ ⟨ cache_duration ↦ DEFAULT_CACHE_DURATION ⟩ ⊕ A
+
+  where  dir_cache(C) ≙ state map C ↦ module_data_path(C)    { per-class, per-process }
 
 =head2 search
 
@@ -845,41 +865,13 @@ This module is provided as-is without any warranty.
 
   where  add_url(o) ≙ o ⊕ ⟨ url ↦ _create_url(o) ⟩
 
-=head2 _create_url (private)
-
-  𝒄𝒓𝒆𝒂𝒕𝒆_𝒖𝒓𝒍 : Obit → URL
-
-  𝒄𝒓𝒆𝒂𝒕𝒆_𝒖𝒓𝒍(o) ≙
-    pre  o.page ≠ ⊥ ∧ o.source ≠ ⊥
-    post o.source ∈ {M,F}
-           ⟹ URLS[o.source] ++ o.page
-       ∥ o.source = L ∧ o.newspaper =~ m{^https?://}
-           ⟹ o.newspaper
-       ∥ o.source = L ∧ o.page =~ m{^https?://}
-           ⟹ o.page
-       ∥ o.source = L
-           ⟹ abort err_no_newspaper
-       ∥ otherwise
-           ⟹ abort err_bad_source
-
-=head2 _i18n (private)
-
-  𝒊𝟏𝟖𝒏 : (Class ∪ Object) × Key × Args → String
-
-  𝒊𝟏𝟖𝒏(_, k, A) ≙
-    pre  k ∈ dom MESSAGES
-    let  tpl = MESSAGES[k]
-         sub = { n ↦ A(n) ∨ "" | n ∈ placeholders(tpl) }
-    post tpl with each %{n} replaced by sub(n)
-       ∥ k ∉ dom MESSAGES ⟹ abort "Unknown i18n key k"
-
-  where  placeholders(t) ≙ { n | t =~ m/%\{(n)\}/g }
-
 =head1 LICENSE AND COPYRIGHT
 
 Copyright 2020-2026 Nigel Horne.
 
-This program is released under the following licence: GPL2
+Usage is subject to the GPL2 licence terms.
+If you use it,
+please let me know.
 
 =cut
 
