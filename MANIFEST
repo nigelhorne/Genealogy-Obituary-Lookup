@@ -37,6 +37,7 @@ t/no404s.t
 t/noopentickets.t
 t/noplan.t
 t/obituaries.t
+t/path.t
 t/pod-cm.t
 t/pod-snippets.t
 t/pod-spelling.t
