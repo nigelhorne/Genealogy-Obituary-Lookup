@@ -204,7 +204,7 @@ subtest 'new() directory [BVA]: /dev/null (exists but is not a dir) → returns 
 # DOMAIN 2: new() — logger parameter
 # ---------------------------------------------------------------------------
 
-subtest 'new() logger [EP-V]: object with info() and error() → accepted' => sub {
+subtest 'new() logger [EP-V]: object with info(), warn() and error() → accepted' => sub {
 	my $dir = _dir();
 	my $obj = $PKG->new(directory => $dir, logger => MyLogger->new());
 	ok(defined $obj && blessed($obj), 'valid logger object accepted');
@@ -262,12 +262,26 @@ subtest 'new() logger [EP-I]: blessed object missing error() → croak err_bad_l
 		'[EP-I] logger with info() but no error() → err_bad_logger';
 };
 
+subtest 'new() logger [EP-I]: blessed object missing warn() → croak err_bad_logger' => sub {
+	my $dir = _dir();
+	{
+		package LogNoWarn;
+		sub new   { bless {}, shift }
+		sub info  { }
+		sub error { }
+	}
+	throws_ok { $PKG->new(directory => $dir, logger => LogNoWarn->new()) }
+		qr/Logger must be an object/i,
+		'[EP-I] logger with info() and error() but no warn() → err_bad_logger';
+};
+
 subtest 'new() logger [EP-V]: blessed object with extra methods (superset) → accepted' => sub {
 	my $dir = _dir();
 	{
 		package LogSuperset;
 		sub new   { bless {}, shift }
 		sub info  { }
+		sub warn  { }
 		sub error { }
 		sub debug { }
 		sub trace { }

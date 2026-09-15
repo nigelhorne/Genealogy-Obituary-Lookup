@@ -100,6 +100,7 @@ WriteMakefile(
 		'Errno' => 0,
 		'FindBin' => 0,
 		'File::Temp' => 0,
+		'IPC::Run3' => 0,
 		'POSIX' => 0,
 		'Test::Carp' => 0,
 		'Test::DescribeMe' => 0,

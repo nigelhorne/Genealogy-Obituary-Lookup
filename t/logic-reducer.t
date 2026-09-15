@@ -41,7 +41,7 @@ use Readonly;
 # ---------------------------------------------------------------------------
 # Audit logger: records every method call to prove WHICH logger methods
 # new() actually invokes for non-fatal events (bad directory, null byte).
-# The contracted interface is {info, error}, but new() calls ->warn() for
+# The contracted interface is {info, warn, error}; new() calls ->warn() for
 # non-fatal diagnostics — this mock captures that call.
 # ---------------------------------------------------------------------------
 {

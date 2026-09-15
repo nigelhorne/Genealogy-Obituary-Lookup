@@ -31,8 +31,8 @@ internally by L<Genealogy::Obituary::Lookup>.
 =head1 DESCRIPTION
 
 A thin subclass of L<Database::Abstraction> that points at the F<obituaries.sql>
-SQLite database shipped with the distribution.  All query logic — SQL
-generation, caching, row mapping — is inherited from the parent class.
+SQLite database shipped with the distribution.
+All query logic - SQL generation, caching, row mapping - is inherited from the parent class.
 
 The database schema is:
 

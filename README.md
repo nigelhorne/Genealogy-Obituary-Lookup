@@ -1,7 +1,7 @@
 Genealogy::Obituary::Lookup
 ===========================
 
-[![Appveyor status](https://ci.appveyor.com/api/projects/status/w2kcdehjtofvt55t?svg=true)](https://ci.appveyor.com/project/nigelhorne/genealogy-obituarydailytimes)
+[![Appveyor status](https://ci.appveyor.com/api/projects/status/w2kcdehjtofvt55t?svg=true)](https://ci.appveyor.com/project/nigelhorne/Genealogy-Obituary-Lookup)
 [![CPAN](https://img.shields.io/cpan/v/Genealogy-Obituary-Lookup.svg)](http://search.cpan.org/~nhorne/Genealogy-Obituary-Lookup/)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nigelhorne/genealogy-obituarydailytimes/test.yml?branch=master)
 [![Kritika Analysis Status](https://kritika.io/users/nigelhorne/repos/7086407966497872/heads/master/status.svg)](https://kritika.io/users/nigelhorne/repos/7086407966497872/heads/master/)
@@ -70,8 +70,9 @@ are merged into the constructor arguments at runtime, allowing deployment-time
 override without code changes.
 - `directory` - directory that contains `obituaries.sql`.  If a single
 non-reference argument is passed to `new()`, it is taken as `directory`.
-- `logger` - object with `info()` and `error()` methods (e.g.
-[Log::Log4perl](https://metacpan.org/pod/Log%3A%3ALog4perl), [Log::Any](https://metacpan.org/pod/Log%3A%3AAny)).
+- `logger` - object with `info()`, `warn()` and `error()` methods (e.g.
+[Log::Log4perl](https://metacpan.org/pod/Log%3A%3ALog4perl), [Log::Any](https://metacpan.org/pod/Log%3A%3AAny)).  All three are required: `warn()` is used for
+non-fatal directory diagnostics; `error()` for fatal DB errors.
 
 ### EXAMPLE
 
@@ -117,8 +118,16 @@ non-reference argument is passed to `new()`, it is taken as `directory`.
 #### DOMAIN — logger
 
     Valid partition
-      EP-V  Blessed object with can('info') && can('error')   Accepted.
-            Additional methods beyond info/error are fine.
+      EP-V  Blessed object with can('info') && can('warn') && can('error')   Accepted.
+            Additional methods beyond these three are fine.
+
+    Method roles
+      info()  Informational messages (progress, cache hits).  Non-fatal.
+      warn()  Non-fatal diagnostics: bad directory, null byte in path.
+              Called instead of error() so that new() can carp+return undef
+              rather than die.  Log::Abstraction::error() calls die(); using
+              it here would violate the graceful-return contract.
+      error() Fatal-severity events from search() when the DB cannot be opened.
 
     Invalid partitions (all croak err_bad_logger)
       EP-I  String                Not an object.
@@ -126,6 +135,7 @@ non-reference argument is passed to `new()`, it is taken as `directory`.
       EP-I  Unblessed hashref     Not blessed.
       EP-I  Coderef               Not blessed.
       EP-I  Object missing info() Incomplete interface.
+      EP-I  Object missing warn() Incomplete interface.
       EP-I  Object missing error() Incomplete interface.
 
 #### DOMAIN — invocation style
@@ -151,7 +161,7 @@ non-reference argument is passed to `new()`, it is taken as `directory`.
                      Resolution: pass a valid, readable directory.
     warn_bad_usage - use ->new() not ::new() when passing arguments.
                      Resolution: call as a class method.
-    err_bad_logger - Logger must have info() and error() methods.
+    err_bad_logger - Logger must have info(), warn() and error() methods.
                      Resolution: wrap your logger in an adapter.
 
 ### PSEUDOCODE
@@ -210,7 +220,7 @@ The returned hashrefs always include a `url` key pointing to the source archive.
         type    => 'string',
         min     => 1,
         max     => 100,
-        matches => qr/^[\w\-]+$/     # hyphens allowed, apostrophes not
+        matches => qr/\A[\w-]+\z/     # hyphens allowed; \z rejects trailing newlines
       },
       'first' => {
         type     => 'string',
@@ -242,7 +252,7 @@ The returned hashrefs always include a `url` key pointing to the source archive.
 
     Equivalence partitions
       EP-V  "Smith"           Typical ASCII surname.
-      EP-V  "Smith-Jones"     Hyphen is allowed (in [\w\-]).
+      EP-V  "Smith-Jones"     Hyphen is allowed (in [\w-]).
       EP-V  "Mc_Arthur"       Underscore is \w.
       EP-V  "Smith2"          Digit is \w.
       EP-I  undef             Croak err_no_last.
@@ -360,7 +370,7 @@ The returned hashrefs always include a `url` key pointing to the source archive.
 
 ## Apostrophes are rejected in last names
 
-The `last` field is validated against `qr/^[\w\-]+$/`.  This allows letters,
+The `last` field is validated against `qr/\A[\w-]+\z/`.  This allows letters,
 digits, underscores, and hyphens, but **not** apostrophes.  A search for
 `last => "O'Brien"` will croak at validation time.  Use the closest
 hyphenated or unhyphenated spelling:
@@ -409,14 +419,20 @@ Copy the hashref or the field before modifying it:
     my %copy = %{ $hits[0] };
     $copy{last} = 'Jones';        # OK
 
-## Logger must implement both info() and error()
+## Logger must implement info(), warn(), and error()
 
 `new()` validates the logger before storing it.  The object must be blessed and
-must implement **both** `info()` and `error()`.  An object that satisfies only
-one of the two methods will cause `new()` to croak immediately:
+must implement **all three** of `info()`, `warn()`, and `error()`.  An object
+missing any one of them will cause `new()` to croak immediately:
 
-    # CROAKS: object provides error() but not info()
+    # CROAKS: object provides info() and error() but not warn()
     my $obits = Genealogy::Obituary::Lookup->new(logger => $partial_logger);
+
+`warn()` is required because `new()` uses it (not `error()`) to report
+non-fatal events such as a missing or unreadable directory.  Using `error()`
+for those events would cause loggers whose `error()` calls `die` (such as
+[Log::Abstraction](https://metacpan.org/pod/Log%3A%3AAbstraction)) to convert a graceful `carp + return undef` into a fatal
+exception, breaking the documented API contract.
 
 ## Non-ASCII characters in last depend on runtime locale
 

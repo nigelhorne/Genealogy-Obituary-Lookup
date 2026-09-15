@@ -263,11 +263,20 @@ subtest 'new(): injection attempts did not create sentinel file' => sub {
 	package LoggerNoError;
 	sub new  { bless {}, shift }
 	sub info { }
+	sub warn { }
 }
 
 {
 	package LoggerNoInfo;
 	sub new   { bless {}, shift }
+	sub warn  { }
+	sub error { }
+}
+
+{
+	package LoggerNoWarn;
+	sub new   { bless {}, shift }
+	sub info  { }
 	sub error { }
 }
 
@@ -291,6 +300,12 @@ subtest 'new(): logger with error() but no info() is rejected' => sub {
 	throws_ok { _new_obj(logger => LoggerNoInfo->new()) }
 		qr/Logger must/,
 		'logger missing info() is rejected';
+};
+
+subtest 'new(): logger with info() and error() but no warn() is rejected' => sub {
+	throws_ok { _new_obj(logger => LoggerNoWarn->new()) }
+		qr/Logger must/,
+		'logger missing warn() is rejected';
 };
 
 subtest 'new(): AUTOLOAD-only logger is rejected (can() cannot see the methods)' => sub {

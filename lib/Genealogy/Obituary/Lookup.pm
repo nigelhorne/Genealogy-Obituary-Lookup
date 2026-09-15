@@ -59,7 +59,7 @@ my %MESSAGES = (
 	err_no_source     => '%{package}: %{page}: undefined source',
 	err_bad_source    => "%{package}: Invalid source, '%{source}'. Valid sources are 'M', 'F' and 'L'",
 	err_no_newspaper  => "%{package}: undefined newspaper. Newspaper must be given when source type is 'L'",
-	err_bad_logger    => "Logger must be an object with info() and error() methods",
+	err_bad_logger    => "Logger must be an object with info(), warn() and error() methods",
 	warn_not_dir      => '%{class}: %{dir} is not a directory',
 	warn_bad_usage    => '%{package}: use ->new() not ::new() to instantiate',
 );
@@ -122,8 +122,9 @@ override without code changes.
 =item * C<directory> - directory that contains F<obituaries.sql>.  If a single
 non-reference argument is passed to C<new()>, it is taken as C<directory>.
 
-=item * C<logger> - object with C<info()> and C<error()> methods (e.g.
-L<Log::Log4perl>, L<Log::Any>).
+=item * C<logger> - object with C<info()>, C<warn()> and C<error()> methods (e.g.
+L<Log::Log4perl>, L<Log::Any>).  All three are required: C<warn()> is used for
+non-fatal directory diagnostics; C<error()> for fatal DB errors.
 
 =back
 
@@ -171,8 +172,16 @@ L<Log::Log4perl>, L<Log::Any>).
 =head4 DOMAIN — logger
 
   Valid partition
-    EP-V  Blessed object with can('info') && can('error')   Accepted.
-          Additional methods beyond info/error are fine.
+    EP-V  Blessed object with can('info') && can('warn') && can('error')   Accepted.
+          Additional methods beyond these three are fine.
+
+  Method roles
+    info()  Informational messages (progress, cache hits).  Non-fatal.
+    warn()  Non-fatal diagnostics: bad directory, null byte in path.
+            Called instead of error() so that new() can carp+return undef
+            rather than die.  Log::Abstraction::error() calls die(); using
+            it here would violate the graceful-return contract.
+    error() Fatal-severity events from search() when the DB cannot be opened.
 
   Invalid partitions (all croak err_bad_logger)
     EP-I  String                Not an object.
@@ -180,6 +189,7 @@ L<Log::Log4perl>, L<Log::Any>).
     EP-I  Unblessed hashref     Not blessed.
     EP-I  Coderef               Not blessed.
     EP-I  Object missing info() Incomplete interface.
+    EP-I  Object missing warn() Incomplete interface.
     EP-I  Object missing error() Incomplete interface.
 
 =head4 DOMAIN — invocation style
@@ -205,7 +215,7 @@ L<Log::Log4perl>, L<Log::Any>).
                    Resolution: pass a valid, readable directory.
   warn_bad_usage - use ->new() not ::new() when passing arguments.
                    Resolution: call as a class method.
-  err_bad_logger - Logger must have info() and error() methods.
+  err_bad_logger - Logger must have info(), warn() and error() methods.
                    Resolution: wrap your logger in an adapter.
 
 =head3 PSEUDOCODE
@@ -261,6 +271,7 @@ sub new
 	if(defined $args{'logger'}) {
 		unless(Scalar::Util::blessed($args{'logger'})
 			&& $args{'logger'}->can('info')
+			&& $args{'logger'}->can('warn')
 			&& $args{'logger'}->can('error'))
 		{
 			Carp::croak($class_in->_i18n('err_bad_logger'));
@@ -279,7 +290,7 @@ sub new
 			my $info = Module::Info->new_from_loaded($class_in);
 			my $derived;
 			if(defined $info) {
-				(my $base = $info->file()) =~ s/\.pm$//;
+				(my $base = $info->file()) =~ s/\.pm\z//;
 				$derived = File::Spec->catfile($base, 'data');
 				$derived = undef unless -d $derived;
 			}
@@ -303,7 +314,7 @@ sub new
 		}
 		# Conclusion: no null bytes remain, so m/\A([^\0]*)\z/ is guaranteed to
 		# match — the capture is infallible. Untaint for taint-mode callers.
-		($args{'directory'}) = ($args{'directory'} =~ m/\A([^\0]*)\z/ms);
+		($args{'directory'}) = ($args{'directory'} =~ m/\A([^\0]*)\z/);
 	}
 
 	if(defined($args{'directory'}) && !((-d $args{'directory'}) && (-r $args{'directory'}))) {
@@ -360,7 +371,7 @@ The returned hashrefs always include a C<url> key pointing to the source archive
       type    => 'string',
       min     => 1,
       max     => 100,
-      matches => qr/^[\w\-]+$/     # hyphens allowed, apostrophes not
+      matches => qr/\A[\w-]+\z/     # hyphens allowed; \z rejects trailing newlines
     },
     'first' => {
       type     => 'string',
@@ -392,7 +403,7 @@ The returned hashrefs always include a C<url> key pointing to the source archive
 
   Equivalence partitions
     EP-V  "Smith"           Typical ASCII surname.
-    EP-V  "Smith-Jones"     Hyphen is allowed (in [\w\-]).
+    EP-V  "Smith-Jones"     Hyphen is allowed (in [\w-]).
     EP-V  "Mc_Arthur"       Underscore is \w.
     EP-V  "Smith2"          Digit is \w.
     EP-I  undef             Croak err_no_last.
@@ -527,7 +538,7 @@ sub search
 				type    => 'string',
 				min     => $MIN_LAST_NAME_LENGTH,
 				max     => $MAX_LAST_NAME_LENGTH,
-				matches => qr/^[\w\-]+$/,	# Allow hyphens in surnames
+				matches => qr/\A[\w-]+\z/,	# Allow hyphens; \z rejects trailing newlines that \$ misses
 			},
 			'first' => {
 				type => 'string', optional => 1, min => 1, max => 100,
@@ -621,9 +632,9 @@ sub _create_url
 	} elsif($source eq 'L') {
 		# 'L' (local/link) records embed the full URL in newspaper or page
 		return $obit->{'newspaper'}
-			if defined($obit->{'newspaper'}) && $obit->{'newspaper'} =~ m{^https?://};
+			if defined($obit->{'newspaper'}) && $obit->{'newspaper'} =~ m{\Ahttps?://};
 		return $page
-			if $page =~ m{^https?://};
+			if $page =~ m{\Ahttps?://};
 		Carp::croak(__PACKAGE__->_i18n('err_no_newspaper', {package => __PACKAGE__}));
 	}
 
@@ -661,7 +672,7 @@ sub _i18n
 
 =head2 Apostrophes are rejected in last names
 
-The C<last> field is validated against C<qr/^[\w\-]+$/>.  This allows letters,
+The C<last> field is validated against C<qr/\A[\w-]+\z/>.  This allows letters,
 digits, underscores, and hyphens, but B<not> apostrophes.  A search for
 C<< last => "O'Brien" >> will croak at validation time.  Use the closest
 hyphenated or unhyphenated spelling:
@@ -710,14 +721,20 @@ Copy the hashref or the field before modifying it:
     my %copy = %{ $hits[0] };
     $copy{last} = 'Jones';        # OK
 
-=head2 Logger must implement both info() and error()
+=head2 Logger must implement info(), warn(), and error()
 
 C<new()> validates the logger before storing it.  The object must be blessed and
-must implement B<both> C<info()> and C<error()>.  An object that satisfies only
-one of the two methods will cause C<new()> to croak immediately:
+must implement B<all three> of C<info()>, C<warn()>, and C<error()>.  An object
+missing any one of them will cause C<new()> to croak immediately:
 
-    # CROAKS: object provides error() but not info()
+    # CROAKS: object provides info() and error() but not warn()
     my $obits = Genealogy::Obituary::Lookup->new(logger => $partial_logger);
+
+C<warn()> is required because C<new()> uses it (not C<error()>) to report
+non-fatal events such as a missing or unreadable directory.  Using C<error()>
+for those events would cause loggers whose C<error()> calls C<die> (such as
+L<Log::Abstraction>) to convert a graceful C<carp + return undef> into a fatal
+exception, breaking the documented API contract.
 
 =head2 Non-ASCII characters in last depend on runtime locale
 

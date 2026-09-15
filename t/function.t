@@ -139,8 +139,8 @@ subtest 'new() — valid logger object is accepted' => sub {
 	# Object::Configure may wrap the logger in Log::Abstraction; check the
 	# interface rather than the exact class.
 	ok(defined $obj->{logger}, 'logger is stored on the object');
-	ok($obj->{logger}->can('info') && $obj->{logger}->can('error'),
-		'stored logger responds to info() and error()');
+	ok($obj->{logger}->can('info') && $obj->{logger}->can('warn') && $obj->{logger}->can('error'),
+		'stored logger responds to info(), warn() and error()');
 };
 
 subtest 'new() — unblessed logger value croaks (err_bad_logger)' => sub {
