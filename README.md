@@ -21,13 +21,37 @@ Version 0.20
 
     use Genealogy::Obituary::Lookup;
 
+    # --- 1. Basic search: list context, all matching records ---
     my $obits  = Genealogy::Obituary::Lookup->new();
     my @smiths = $obits->search(last => 'Smith');
-    print $smiths[0]->{'url'}, "\n";
+    foreach my $r (@smiths) {
+        printf "%s %s -- %s\n",
+            $r->{first} // '?', $r->{last}, $r->{url};
+    }
 
-    # Scalar context - first match only
-    my $baal = $obits->search({ first => 'Eric', last => 'Baal' });
-    print $baal->{'url'}, "\n" if $baal;
+    # --- 2. Scalar context: first matching record only ---
+    my $hit = $obits->search({ first => 'Eric', last => 'Baal' });
+    print $hit->{url}, "\n" if $hit;
+
+    # --- 3. Narrow a search with optional first, middle, and age ---
+    my @results = $obits->search(
+        first  => 'Jean',
+        middle => 'Emily',
+        last   => 'McCarthy',
+    );
+
+    # --- 4. Clone an object to use a different data directory ---
+    my $prod = Genealogy::Obituary::Lookup->new(directory => '/data/obits');
+    my $test = $prod->new(directory => 't/data');   # clone with override
+    my @test_hits = $test->search(last => 'Jones');
+
+    # --- 5. Attach a structured logger ---
+    use Log::Log4perl qw(:easy);
+    Log::Log4perl->easy_init($DEBUG);
+    my $logged = Genealogy::Obituary::Lookup->new(
+        logger => Log::Log4perl->get_logger(),
+    );
+    my @hits = $logged->search(last => 'Brown');
 
 # SUBROUTINES/METHODS
 
@@ -73,8 +97,48 @@ non-reference argument is passed to `new()`, it is taken as `directory`.
       'logger'      => {
           type => 'object',
           optional => 1,
-          can => [ 'info', 'error' ] }
+          can => [ 'info', 'error' ]
+      }
     }
+
+#### DOMAIN — directory
+
+    Valid partitions
+      EP-V  Absent / undef        Auto-discovers data/ relative to module file.
+      EP-V  Existing readable dir Accepted; stored in $self->{directory}.
+
+    Invalid partitions (all carp + return undef)
+      EP-I  Non-existent path     Carps "not a directory".
+      EP-I  Existing plain file   Carps "not a directory".
+      EP-I  Unreadable directory  Carps "not a directory".
+      EP-I  Empty string ""       Carps "not a directory" (-d "" is false).
+      EP-I  Path with null byte   Rejected before -d (prevents "Embedded nulls" fatal).
+
+#### DOMAIN — logger
+
+    Valid partition
+      EP-V  Blessed object with can('info') && can('error')   Accepted.
+            Additional methods beyond info/error are fine.
+
+    Invalid partitions (all croak err_bad_logger)
+      EP-I  String                Not an object.
+      EP-I  Number                Not an object.
+      EP-I  Unblessed hashref     Not blessed.
+      EP-I  Coderef               Not blessed.
+      EP-I  Object missing info() Incomplete interface.
+      EP-I  Object missing error() Incomplete interface.
+
+#### DOMAIN — invocation style
+
+    Valid
+      EP-V  Pkg->new(...)          Class method — normal invocation.
+      EP-V  $obj->new(...)         Object method — clone with optional overrides.
+      EP-V  Pkg->new('/path')      Single bare string — treated as directory.
+      EP-V  Pkg->new({key=>val})   Hashref argument.
+      EP-V  Pkg::new()             No-arg bare call — tolerated silently.
+
+    Invalid
+      EP-I  Pkg::new(undef, args)  Croak warn_bad_usage (undef class + args detected).
 
 #### OUTPUT
 
@@ -164,6 +228,103 @@ The returned hashrefs always include a `url` key pointing to the source archive.
       }
     }
 
+#### DOMAIN — last (required)
+
+    Boundary values
+      BVA MIN-1  ""          (0 chars)   INVALID — croak err_no_last
+      BVA MIN    "A"         (1 char)    valid
+      BVA MAX    "A"x100     (100 chars) valid
+      BVA MAX+1  "A"x101     (101 chars) INVALID — croak (schema max exceeded)
+
+    Equivalence partitions
+      EP-V  "Smith"           Typical ASCII surname.
+      EP-V  "Smith-Jones"     Hyphen is allowed (in [\w\-]).
+      EP-V  "Mc_Arthur"       Underscore is \w.
+      EP-V  "Smith2"          Digit is \w.
+      EP-I  undef             Croak err_no_last.
+      EP-I  "O'Brien"         Apostrophe not in [\w\-] — rejected.
+      EP-I  "van Berg"        Space not in [\w\-] — rejected.
+      EP-I  "Smith; DROP ..." SQL injection metacharacters rejected.
+
+    Character-domain (format partition)
+      FMT   German umlauts (u-umlaut, sharp-s)
+                              Matched by \w only when string has the UTF-8 flag
+                              AND the calling program uses "use utf8" (or the
+                              runtime locale enables Unicode semantics).  Without
+                              those, the same characters are rejected.  No crash
+                              either way; behaviour depends on runtime locale.
+      FMT   Accented Latin (e.g. e-acute, n-tilde)
+                              Same as German umlauts — locale-dependent.
+      FMT   Emoji             Not \w under any locale — always rejected.
+      FMT   Zalgo combining marks  Not \w — always rejected.
+      FMT   RTL-override (U+202E)  Not \w — always rejected.
+      FMT   Full-width ASCII (e.g. U+FF33)  Not \w — rejected.
+
+    Encoding note
+      The field value is stored and searched as received; the module does not
+      normalize Unicode (NFC/NFD) or transliterate diacritics.  Ensure the caller
+      and the database were built with the same normalization if non-ASCII
+      surnames are used.
+
+#### DOMAIN — first / middle (optional)
+
+    Boundary values
+      BVA MIN-1  ""       (0 chars)   INVALID — croak (schema min exceeded)
+      BVA MIN    "J"      (1 char)    valid
+      BVA MAX    "J"x100  (100 chars) valid
+      BVA MAX+1  "J"x101  (101 chars) INVALID
+
+    Equivalence partitions
+      EP-V  Absent                   Valid — field is optional.
+      EP-V  "John"                   Typical value.
+      EP-V  "O'Malley"               No format constraint on first/middle.
+      EP-I  ""  (empty string)       INVALID (min=1).
+
+    Character-domain (format partition)
+      FMT   ASCII text               Always accepted within length limits.
+      FMT   Non-ASCII / UTF-8        Accepted — no regex constraint on first/middle.
+                                     Diacritics, accented letters, and multibyte
+                                     sequences are passed through unchanged.
+      FMT   Emoji                    Accepted syntactically; matched literally in
+                                     SQL LIKE comparisons (no normalization).
+      FMT   Zalgo / RTL overrides    Accepted syntactically; may produce unexpected
+                                     SQL matches or rendering artifacts.
+
+    Encoding note
+      first and middle are the safest fields for non-ASCII input: no regex
+      validation is applied and UTF-8 strings are stored and searched as-is.
+      Length is measured in Perl characters, not bytes; a 4-byte emoji counts
+      as 1 character toward the 100-character limit.
+
+#### DOMAIN — age (optional integer)
+
+    Boundary values
+      BVA MIN-1  -1    INVALID — croak (schema min=0 exceeded)
+      BVA MIN     0    valid (newborn)
+      BVA MAX   120    valid (maximum recorded human lifespan)
+      BVA MAX+1 121    INVALID — croak (schema max exceeded)
+
+    Equivalence partitions
+      EP-V  65           Typical adult age.
+      EP-V  Absent       Valid — field is optional.
+      EP-I  -1           Below minimum.
+      EP-I  121          Above maximum.
+      EP-I  1.5          Non-integer float — rejected (type=integer).
+      EP-I  "old"        Non-numeric string — rejected.
+
+#### DOMAIN — invocation style
+
+    EP-V  $obj->search(...)         Normal object-method call.
+    EP-I  Pkg->search(...)          Croak err_no_self (class is not blessed).
+    EP-I  Pkg::search(...)          Croak err_no_self.
+    EP-I  $obj->search()            Croak err_no_args (zero args).
+
+#### CONTEXT DOMAIN
+
+    List context   Returns list of hashrefs; empty list on no match.
+    Scalar context Returns single hashref (first match) or undef.
+    Void context   No crash; result silently discarded.
+
 #### OUTPUT
 
     Argument error:     croak
@@ -190,6 +351,109 @@ The returned hashrefs always include a `url` key pointing to the source archive.
     6. List context: fetchall, attach URL, fixate string values, return list.
     7. Scalar context: fetchone, attach URL, fixate string values, return hashref.
     8. Return undef / empty list when no rows match.
+
+# COMMON PITFALLS
+
+## Apostrophes are rejected in last names
+
+The `last` field is validated against `qr/^[\w\-]+$/`.  This allows letters,
+digits, underscores, and hyphens, but **not** apostrophes.  A search for
+`last => "O'Brien"` will croak at validation time.  Use the closest
+hyphenated or unhyphenated spelling:
+
+    $obits->search(last => 'OBrien');   # OK
+    $obits->search(last => "O'Brien");  # CROAKS
+
+## new() returns undef on a bad directory; it does not croak
+
+When `directory` is supplied but does not exist or is not readable, `new()`
+calls `Carp::carp` (a warning, not a fatal error) and returns `undef`.
+Always check the return value before calling `search()`:
+
+    my $obits = Genealogy::Obituary::Lookup->new(directory => $path)
+        or die "Could not open obituary database at $path";
+
+## Scalar vs list context returns different things
+
+`search()` is context-sensitive.  In list context it returns every matching
+record.  In scalar context it returns only the first match.  Assigning to a
+plain variable is scalar context; assigning to an array is list context:
+
+    my @all   = $obits->search(last => 'Smith');   # all records (list context)
+    my $first = $obits->search(last => 'Smith');   # one record  (scalar context)
+
+## Clone semantics: the database handle is shared
+
+Calling `$obj->new(...)` creates a _shallow copy_ of the parent.  If the
+parent has already run a search (and therefore opened its `obituaries` handle),
+the clone starts out sharing that same handle object.  The clone replaces the
+handle on its first search call, but until then both objects reference the same
+underlying driver.  This is intentional and efficient; be aware of it if you
+pass handles between threads or processes.
+
+## Search results are interned and become read-only
+
+After `search()` returns, all string values inside the result hashrefs are
+interned by `Data::Reuse::fixate`.  Any attempt to modify them in place will
+die with `"Modification of a read-only value"`:
+
+    my @hits = $obits->search(last => 'Smith');
+    $hits[0]->{last} = 'Jones';   # DIES -- read-only after search()
+
+Copy the hashref or the field before modifying it:
+
+    my %copy = %{ $hits[0] };
+    $copy{last} = 'Jones';        # OK
+
+## Logger must implement both info() and error()
+
+`new()` validates the logger before storing it.  The object must be blessed and
+must implement **both** `info()` and `error()`.  An object that satisfies only
+one of the two methods will cause `new()` to croak immediately:
+
+    # CROAKS: object provides error() but not info()
+    my $obits = Genealogy::Obituary::Lookup->new(logger => $partial_logger);
+
+## Non-ASCII characters in last depend on runtime locale
+
+The `[\w\-]+` regex matches `\w`, which includes non-ASCII word characters
+(accented letters, umlauts) when the string has the UTF-8 flag and the calling
+code uses `use utf8`.  Without that, the same input is rejected.  The module
+does not set any locale; test explicitly if your data contains diacritics.
+
+# SECURITY NOTES
+
+## Null bytes in directory paths are rejected early
+
+A `directory` string containing a null byte (`\0`) would cause Perl's
+`stat()` to throw a fatal `"Embedded nulls are forbidden"` exception.
+`new()` detects this before the filesystem call and carps gracefully instead
+of dying with an uncatchable error.
+
+## Taint-mode readiness
+
+The `directory` argument is passed through a `m/\A([^\0]*)\z/` capture before
+any filesystem operator sees it.  This untaints the value for callers running
+under Perl's taint mode (`perl -T`) without requiring any extra configuration.
+
+## URL construction uses percent-encoding
+
+The database builder (`bin/create_db.PL`) encodes user-controlled components
+via `URI::Escape::uri_escape` before embedding them in HTTP URLs.  This
+prevents surname values from being misinterpreted as URL structure.
+
+## Path traversal is prevented in the database builder
+
+Environment variables `MLARCHIVEDIR` and `MLARCHIVE_DIR` are canonicalized
+with `File::Spec->canonpath()` and then checked to confirm the resolved
+path starts with the declared base directory.  Any path that escapes the base
+via `../` components is rejected with `croak`.
+
+## i18n substitution uses no eval
+
+The `_i18n()` helper pre-builds a substitution table from template
+placeholders and then applies a plain `s///g` replacement.  No `/e` modifier
+or string `eval` is used, so template values cannot execute arbitrary code.
 
 # LIMITATIONS
 
@@ -268,6 +532,36 @@ This module is provided as-is without any warranty.
                 else ⟹ head({ o : Obit | match(self.db, P) } |> map(add_url))
 
     where  add_url(o) ≙ o ⊕ ⟨ url ↦ _create_url(o) ⟩
+
+## \_create\_url (private)
+
+    𝒄𝒓𝒆𝒂𝒕𝒆_𝒖𝒓𝒍 : Obit → URL
+
+    𝒄𝒓𝒆𝒂𝒕𝒆_𝒖𝒓𝒍(o) ≙
+      pre  o.page ≠ ⊥ ∧ o.source ≠ ⊥
+      post o.source ∈ {M,F}
+             ⟹ URLS[o.source] ++ o.page
+         ∥ o.source = L ∧ o.newspaper =~ m{^https?://}
+             ⟹ o.newspaper
+         ∥ o.source = L ∧ o.page =~ m{^https?://}
+             ⟹ o.page
+         ∥ o.source = L
+             ⟹ abort err_no_newspaper
+         ∥ otherwise
+             ⟹ abort err_bad_source
+
+## \_i18n (private)
+
+    𝒊𝟏𝟖𝒏 : (Class ∪ Object) × Key × Args → String
+
+    𝒊𝟏𝟖𝒏(_, k, A) ≙
+      pre  k ∈ dom MESSAGES
+      let  tpl = MESSAGES[k]
+           sub = { n ↦ A(n) ∨ "" | n ∈ placeholders(tpl) }
+      post tpl with each %{n} replaced by sub(n)
+         ∥ k ∉ dom MESSAGES ⟹ abort "Unknown i18n key k"
+
+    where  placeholders(t) ≙ { n | t =~ m/%\{(n)\}/g }
 
 # LICENSE AND COPYRIGHT
 
