@@ -25,41 +25,41 @@ https://pjcj.net
 <div><br/></div>
 <table>
 <tr><th>line</th><th>%</th><th colspan="2">coverage</th><th>branch</th></tr>
-<tr><td class="h"><a id="L237">237</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (scalar @_ == 0 and not ref $class_in and defined $class_in and -d $class_in) { }</td></tr>
+<tr><td class="h"><a id="L247">247</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (scalar @_ == 0 and not ref $class_in and defined $class_in and -d $class_in) { }</td></tr>
 <tr><td class="h"></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">elsif (scalar @_ == 1 and not ref $_[0]) { }</td></tr>
 <tr><td class="h"></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">elsif (my $params = Params::Get::get_params(undef, @_)) { }</td></tr>
-<tr><td class="h"><a id="L248">248</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (not defined $class_in) { }</td></tr>
+<tr><td class="h"><a id="L258">258</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (not defined $class_in) { }</td></tr>
 <tr><td class="h"></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">elsif (&amp;Scalar::Util::blessed($class_in)) { }</td></tr>
-<tr><td class="h"><a id="L250">250</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (%args)</td></tr>
-<tr><td class="h"><a id="L261">261</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (defined $args{&quot;logger&quot;})</td></tr>
-<tr><td class="h"><a id="L262">262</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (&amp;Scalar::Util::blessed($args{&quot;logger&quot;}) and $args{&quot;logger&quot;}-&gt;can(&quot;info&quot;) and $args{&quot;logger&quot;}-&gt;can(&quot;error&quot;))</td></tr>
-<tr><td class="h"><a id="L277">277</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (defined $args{&quot;directory&quot;})</td></tr>
-<tr><td class="h"><a id="L278">278</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (exists $_dir_cache{$class_in})</td></tr>
-<tr><td class="h"><a id="L281">281</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if (defined $info)</td></tr>
-<tr><td class="h"><a id="L284">284</a></td><td class="c0">50</td><td class="c0">T</td><td class="c3">F</td><td class="s">unless -d $derived</td></tr>
-<tr><td class="h"><a id="L289">289</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if defined $_dir_cache{$class_in}</td></tr>
-<tr><td class="h"><a id="L295">295</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (defined $args{&quot;directory&quot;} and not ref $args{&quot;directory&quot;})</td></tr>
-<tr><td class="h"><a id="L297">297</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (index($args{&quot;directory&quot;}, &quot;\0&quot;) != -1)</td></tr>
-<tr><td class="h"><a id="L300">300</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if $args{&quot;logger&quot;}</td></tr>
-<tr><td class="h"><a id="L309">309</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (defined $args{&quot;directory&quot;} and not -d $args{&#39;directory&#39;} &amp;&amp; -r $args{&#39;directory&#39;})</td></tr>
-<tr><td class="h"><a id="L312">312</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if $args{&quot;logger&quot;}</td></tr>
-<tr><td class="h"><a id="L515">515</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless &amp;Scalar::Util::blessed($self)</td></tr>
-<tr><td class="h"><a id="L520">520</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless @_</td></tr>
-<tr><td class="h"><a id="L546">546</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (defined $$params{&quot;last&quot;} and length $$params{&quot;last&quot;} &gt; 0)</td></tr>
-<tr><td class="h"><a id="L548">548</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if $$self{&quot;logger&quot;}</td></tr>
-<tr><td class="h"><a id="L559">559</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (defined $$self{&quot;obituaries&quot;})</td></tr>
-<tr><td class="h"><a id="L561">561</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if $$self{&quot;logger&quot;}</td></tr>
-<tr><td class="h"><a id="L565">565</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (wantarray)</td></tr>
-<tr><td class="h"><a id="L566">566</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless my $obituaries = $$self{&quot;obituaries&quot;}-&gt;selectall_hashref($params)</td></tr>
-<tr><td class="h"><a id="L572">572</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless defined $obit</td></tr>
-<tr><td class="h"><a id="L586">586</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless my $obit = $$self{&quot;obituaries&quot;}-&gt;fetchrow_hashref($params)</td></tr>
-<tr><td class="h"><a id="L605">605</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (&amp;CORE::GLOBAL::caller())[0] eq __PACKAGE__</td></tr>
-<tr><td class="h"><a id="L612">612</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless defined $page</td></tr>
-<tr><td class="h"><a id="L614">614</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless defined $source</td></tr>
-<tr><td class="h"><a id="L619">619</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if ($source eq &#39;M&#39; or $source eq &#39;F&#39;) { }</td></tr>
+<tr><td class="h"><a id="L260">260</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (%args)</td></tr>
+<tr><td class="h"><a id="L271">271</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (defined $args{&quot;logger&quot;})</td></tr>
+<tr><td class="h"><a id="L272">272</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (&amp;Scalar::Util::blessed($args{&quot;logger&quot;}) and $args{&quot;logger&quot;}-&gt;can(&quot;info&quot;) and $args{&quot;logger&quot;}-&gt;can(&quot;warn&quot;) and $args{&quot;logger&quot;}-&gt;can(&quot;error&quot;))</td></tr>
+<tr><td class="h"><a id="L288">288</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (defined $args{&quot;directory&quot;})</td></tr>
+<tr><td class="h"><a id="L289">289</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (exists $_dir_cache{$class_in})</td></tr>
+<tr><td class="h"><a id="L292">292</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if (defined $info)</td></tr>
+<tr><td class="h"><a id="L295">295</a></td><td class="c0">50</td><td class="c0">T</td><td class="c3">F</td><td class="s">unless -d $derived</td></tr>
+<tr><td class="h"><a id="L300">300</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if defined $_dir_cache{$class_in}</td></tr>
+<tr><td class="h"><a id="L306">306</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (defined $args{&quot;directory&quot;} and not ref $args{&quot;directory&quot;})</td></tr>
+<tr><td class="h"><a id="L308">308</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (index($args{&quot;directory&quot;}, &quot;\0&quot;) != -1)</td></tr>
+<tr><td class="h"><a id="L311">311</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if $args{&quot;logger&quot;}</td></tr>
+<tr><td class="h"><a id="L320">320</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (defined $args{&quot;directory&quot;} and not -d $args{&#39;directory&#39;} &amp;&amp; -r $args{&#39;directory&#39;})</td></tr>
+<tr><td class="h"><a id="L323">323</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if $args{&quot;logger&quot;}</td></tr>
+<tr><td class="h"><a id="L526">526</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless &amp;Scalar::Util::blessed($self)</td></tr>
+<tr><td class="h"><a id="L531">531</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless @_</td></tr>
+<tr><td class="h"><a id="L557">557</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (defined $$params{&quot;last&quot;} and length $$params{&quot;last&quot;} &gt; 0)</td></tr>
+<tr><td class="h"><a id="L559">559</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if $$self{&quot;logger&quot;}</td></tr>
+<tr><td class="h"><a id="L570">570</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (defined $$self{&quot;obituaries&quot;})</td></tr>
+<tr><td class="h"><a id="L572">572</a></td><td class="c0">50</td><td class="c3">T</td><td class="c0">F</td><td class="s">if $$self{&quot;logger&quot;}</td></tr>
+<tr><td class="h"><a id="L576">576</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if (wantarray)</td></tr>
+<tr><td class="h"><a id="L577">577</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless my $obituaries = $$self{&quot;obituaries&quot;}-&gt;selectall_hashref($params)</td></tr>
+<tr><td class="h"><a id="L583">583</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless defined $obit</td></tr>
+<tr><td class="h"><a id="L597">597</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless my $obit = $$self{&quot;obituaries&quot;}-&gt;fetchrow_hashref($params)</td></tr>
+<tr><td class="h"><a id="L616">616</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless (&amp;CORE::GLOBAL::caller())[0] eq __PACKAGE__</td></tr>
+<tr><td class="h"><a id="L623">623</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless defined $page</td></tr>
+<tr><td class="h"><a id="L625">625</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">unless defined $source</td></tr>
+<tr><td class="h"><a id="L630">630</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if ($source eq &#39;M&#39; or $source eq &#39;F&#39;) { }</td></tr>
 <tr><td class="h"></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">elsif ($source eq &#39;L&#39;) { }</td></tr>
-<tr><td class="h"><a id="L624">624</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if defined $$obit{&quot;newspaper&quot;} and $$obit{&quot;newspaper&quot;} =~ m[^https?://]</td></tr>
-<tr><td class="h"><a id="L625">625</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if $page =~ m[^https?://]</td></tr>
+<tr><td class="h"><a id="L635">635</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if defined $$obit{&quot;newspaper&quot;} and $$obit{&quot;newspaper&quot;} =~ m[\Ahttps?://]</td></tr>
+<tr><td class="h"><a id="L636">636</a></td><td class="c3">100</td><td class="c3">T</td><td class="c3">F</td><td class="s">if $page =~ m[\Ahttps?://]</td></tr>
 </table>
 </body>
 </html>
