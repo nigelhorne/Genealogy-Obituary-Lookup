@@ -16,6 +16,8 @@ use Readonly;
 use Return::Set;
 use Scalar::Util;
 
+=encoding UTF-8
+
 =head1 NAME
 
 Genealogy::Obituary::Lookup - Lookup an obituary in the ODT/Rootsweb/funeral-notices database
@@ -65,13 +67,37 @@ my %MESSAGES = (
 
     use Genealogy::Obituary::Lookup;
 
+    # --- 1. Basic search: list context, all matching records ---
     my $obits  = Genealogy::Obituary::Lookup->new();
     my @smiths = $obits->search(last => 'Smith');
-    print $smiths[0]->{'url'}, "\n";
+    foreach my $r (@smiths) {
+        printf "%s %s -- %s\n",
+            $r->{first} // '?', $r->{last}, $r->{url};
+    }
 
-    # Scalar context - first match only
-    my $baal = $obits->search({ first => 'Eric', last => 'Baal' });
-    print $baal->{'url'}, "\n" if $baal;
+    # --- 2. Scalar context: first matching record only ---
+    my $hit = $obits->search({ first => 'Eric', last => 'Baal' });
+    print $hit->{url}, "\n" if $hit;
+
+    # --- 3. Narrow a search with optional first, middle, and age ---
+    my @results = $obits->search(
+        first  => 'Jean',
+        middle => 'Emily',
+        last   => 'McCarthy',
+    );
+
+    # --- 4. Clone an object to use a different data directory ---
+    my $prod = Genealogy::Obituary::Lookup->new(directory => '/data/obits');
+    my $test = $prod->new(directory => 't/data');   # clone with override
+    my @test_hits = $test->search(last => 'Jones');
+
+    # --- 5. Attach a structured logger ---
+    use Log::Log4perl qw(:easy);
+    Log::Log4perl->easy_init($DEBUG);
+    my $logged = Genealogy::Obituary::Lookup->new(
+        logger => Log::Log4perl->get_logger(),
+    );
+    my @hits = $logged->search(last => 'Brown');
 
 =head1 SUBROUTINES/METHODS
 
@@ -365,11 +391,24 @@ The returned hashrefs always include a C<url> key pointing to the source archive
     EP-I  "Smith; DROP ..." SQL injection metacharacters rejected.
 
   Character-domain (format partition)
-    FMT   German umlauts (ü, ß)  May match \w when string is UTF-8 flagged.
-                                  No fatal crash guaranteed either way.
-    FMT   Emoji                  Not \w — rejected.
-    FMT   Zalgo combining marks  Not \w — rejected.
-    FMT   RTL-override (U+202E)  Not \w — rejected.
+    FMT   German umlauts (u-umlaut, sharp-s)
+                            Matched by \w only when string has the UTF-8 flag
+                            AND the calling program uses "use utf8" (or the
+                            runtime locale enables Unicode semantics).  Without
+                            those, the same characters are rejected.  No crash
+                            either way; behaviour depends on runtime locale.
+    FMT   Accented Latin (e.g. e-acute, n-tilde)
+                            Same as German umlauts — locale-dependent.
+    FMT   Emoji             Not \w under any locale — always rejected.
+    FMT   Zalgo combining marks  Not \w — always rejected.
+    FMT   RTL-override (U+202E)  Not \w — always rejected.
+    FMT   Full-width ASCII (e.g. U+FF33)  Not \w — rejected.
+
+  Encoding note
+    The field value is stored and searched as received; the module does not
+    normalize Unicode (NFC/NFD) or transliterate diacritics.  Ensure the caller
+    and the database were built with the same normalization if non-ASCII
+    surnames are used.
 
 =head4 DOMAIN — first / middle (optional)
 
@@ -384,6 +423,22 @@ The returned hashrefs always include a C<url> key pointing to the source archive
     EP-V  "John"                   Typical value.
     EP-V  "O'Malley"               No format constraint on first/middle.
     EP-I  ""  (empty string)       INVALID (min=1).
+
+  Character-domain (format partition)
+    FMT   ASCII text               Always accepted within length limits.
+    FMT   Non-ASCII / UTF-8        Accepted — no regex constraint on first/middle.
+                                   Diacritics, accented letters, and multibyte
+                                   sequences are passed through unchanged.
+    FMT   Emoji                    Accepted syntactically; matched literally in
+                                   SQL LIKE comparisons (no normalization).
+    FMT   Zalgo / RTL overrides    Accepted syntactically; may produce unexpected
+                                   SQL matches or rendering artifacts.
+
+  Encoding note
+    first and middle are the safest fields for non-ASCII input: no regex
+    validation is applied and UTF-8 strings are stored and searched as-is.
+    Length is measured in Perl characters, not bytes; a 4-byte emoji counts
+    as 1 character toward the 100-character limit.
 
 =head4 DOMAIN — age (optional integer)
 
@@ -584,6 +639,109 @@ sub _i18n
 	return $msg;
 }
 
+=head1 COMMON PITFALLS
+
+=head2 Apostrophes are rejected in last names
+
+The C<last> field is validated against C<qr/^[\w\-]+$/>.  This allows letters,
+digits, underscores, and hyphens, but B<not> apostrophes.  A search for
+C<< last => "O'Brien" >> will croak at validation time.  Use the closest
+hyphenated or unhyphenated spelling:
+
+    $obits->search(last => 'OBrien');   # OK
+    $obits->search(last => "O'Brien");  # CROAKS
+
+=head2 new() returns undef on a bad directory; it does not croak
+
+When C<directory> is supplied but does not exist or is not readable, C<new()>
+calls C<Carp::carp> (a warning, not a fatal error) and returns C<undef>.
+Always check the return value before calling C<search()>:
+
+    my $obits = Genealogy::Obituary::Lookup->new(directory => $path)
+        or die "Could not open obituary database at $path";
+
+=head2 Scalar vs list context returns different things
+
+C<search()> is context-sensitive.  In list context it returns every matching
+record.  In scalar context it returns only the first match.  Assigning to a
+plain variable is scalar context; assigning to an array is list context:
+
+    my @all   = $obits->search(last => 'Smith');   # all records (list context)
+    my $first = $obits->search(last => 'Smith');   # one record  (scalar context)
+
+=head2 Clone semantics: the database handle is shared
+
+Calling C<< $obj->new(...) >> creates a I<shallow copy> of the parent.  If the
+parent has already run a search (and therefore opened its C<obituaries> handle),
+the clone starts out sharing that same handle object.  The clone replaces the
+handle on its first search call, but until then both objects reference the same
+underlying driver.  This is intentional and efficient; be aware of it if you
+pass handles between threads or processes.
+
+=head2 Search results are interned and become read-only
+
+After C<search()> returns, all string values inside the result hashrefs are
+interned by C<Data::Reuse::fixate>.  Any attempt to modify them in place will
+die with C<"Modification of a read-only value">:
+
+    my @hits = $obits->search(last => 'Smith');
+    $hits[0]->{last} = 'Jones';   # DIES -- read-only after search()
+
+Copy the hashref or the field before modifying it:
+
+    my %copy = %{ $hits[0] };
+    $copy{last} = 'Jones';        # OK
+
+=head2 Logger must implement both info() and error()
+
+C<new()> validates the logger before storing it.  The object must be blessed and
+must implement B<both> C<info()> and C<error()>.  An object that satisfies only
+one of the two methods will cause C<new()> to croak immediately:
+
+    # CROAKS: object provides error() but not info()
+    my $obits = Genealogy::Obituary::Lookup->new(logger => $partial_logger);
+
+=head2 Non-ASCII characters in last depend on runtime locale
+
+The C<[\w\-]+> regex matches C<\w>, which includes non-ASCII word characters
+(accented letters, umlauts) when the string has the UTF-8 flag and the calling
+code uses C<use utf8>.  Without that, the same input is rejected.  The module
+does not set any locale; test explicitly if your data contains diacritics.
+
+=head1 SECURITY NOTES
+
+=head2 Null bytes in directory paths are rejected early
+
+A C<directory> string containing a null byte (C<\0>) would cause Perl's
+C<stat()> to throw a fatal C<"Embedded nulls are forbidden"> exception.
+C<new()> detects this before the filesystem call and carps gracefully instead
+of dying with an uncatchable error.
+
+=head2 Taint-mode readiness
+
+The C<directory> argument is passed through a C<m/\A([^\0]*)\z/> capture before
+any filesystem operator sees it.  This untaints the value for callers running
+under Perl's taint mode (C<perl -T>) without requiring any extra configuration.
+
+=head2 URL construction uses percent-encoding
+
+The database builder (C<bin/create_db.PL>) encodes user-controlled components
+via C<URI::Escape::uri_escape> before embedding them in HTTP URLs.  This
+prevents surname values from being misinterpreted as URL structure.
+
+=head2 Path traversal is prevented in the database builder
+
+Environment variables C<MLARCHIVEDIR> and C<MLARCHIVE_DIR> are canonicalized
+with C<File::Spec-E<gt>canonpath()> and then checked to confirm the resolved
+path starts with the declared base directory.  Any path that escapes the base
+via C<../> components is rejected with C<croak>.
+
+=head2 i18n substitution uses no eval
+
+The C<_i18n()> helper pre-builds a substitution table from template
+placeholders and then applies a plain C<s///g> replacement.  No C</e> modifier
+or string C<eval> is used, so template values cannot execute arbitrary code.
+
 =head1 LIMITATIONS
 
 =over 4
@@ -661,8 +819,6 @@ This module is provided as-is without any warranty.
 
 =back
 
-=encoding UTF-8
-
 =head1 FORMAL SPECIFICATION
 
 =head2 new
@@ -686,6 +842,36 @@ This module is provided as-is without any warranty.
               else ⟹ head({ o : Obit | match(self.db, P) } |> map(add_url))
 
   where  add_url(o) ≙ o ⊕ ⟨ url ↦ _create_url(o) ⟩
+
+=head2 _create_url (private)
+
+  𝒄𝒓𝒆𝒂𝒕𝒆_𝒖𝒓𝒍 : Obit → URL
+
+  𝒄𝒓𝒆𝒂𝒕𝒆_𝒖𝒓𝒍(o) ≙
+    pre  o.page ≠ ⊥ ∧ o.source ≠ ⊥
+    post o.source ∈ {M,F}
+           ⟹ URLS[o.source] ++ o.page
+       ∥ o.source = L ∧ o.newspaper =~ m{^https?://}
+           ⟹ o.newspaper
+       ∥ o.source = L ∧ o.page =~ m{^https?://}
+           ⟹ o.page
+       ∥ o.source = L
+           ⟹ abort err_no_newspaper
+       ∥ otherwise
+           ⟹ abort err_bad_source
+
+=head2 _i18n (private)
+
+  𝒊𝟏𝟖𝒏 : (Class ∪ Object) × Key × Args → String
+
+  𝒊𝟏𝟖𝒏(_, k, A) ≙
+    pre  k ∈ dom MESSAGES
+    let  tpl = MESSAGES[k]
+         sub = { n ↦ A(n) ∨ "" | n ∈ placeholders(tpl) }
+    post tpl with each %{n} replaced by sub(n)
+       ∥ k ∉ dom MESSAGES ⟹ abort "Unknown i18n key k"
+
+  where  placeholders(t) ≙ { n | t =~ m/%\{(n)\}/g }
 
 =head1 LICENSE AND COPYRIGHT
 
