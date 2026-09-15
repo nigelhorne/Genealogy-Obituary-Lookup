@@ -110,6 +110,7 @@ WriteMakefile(
 		'Test::Most' => 0,
 		'Test::NoWarnings' => 0,
 		'Test::Needs' => 0,
+		'Test::RequiresInternet' => 0,
 		'Test::Returns' => 0,
 		'Test::Which' => 0,
 		# 'Test::Kwalitee' => 0,
