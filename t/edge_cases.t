@@ -585,11 +585,21 @@ subtest 'search(): does not clobber $_ during iteration' => sub {
 };
 
 subtest 'search(): alarm timer is not disturbed' => sub {
-	my $obj = _new_obj();
-	_set_rows([ _obit() ]);
-	eval { alarm(9999) };   # skip if alarm unavailable
+	eval { alarm(9999) };   # skip if alarm() raises an exception
 	if($@) { pass('alarm() not available — skip'); return }
 
+	# alarm() silently no-ops on Windows (returns 0 without arming).
+	# Re-arm and check the seconds-remaining from the previous call:
+	# on a working system it is ≈9999; on a no-op platform it is 0.
+	my $rearm = alarm(9999);
+	unless($rearm > 0) {
+		alarm(0);
+		pass('alarm() silently unavailable on this platform — skip');
+		return;
+	}
+
+	my $obj = _new_obj();
+	_set_rows([ _obit() ]);
 	my @r = $obj->search(last => 'Smith');
 	my $remaining = alarm(0);   # disarm
 	cmp_ok($remaining, '>', 0, 'alarm timer was not cleared by search()');

@@ -138,9 +138,8 @@ WriteMakefile(
 				# license    => 'http://dev.perl.org/licenses/',
 			}, bugtracker => {
 				mailto => 'bug-Genealogy-Obituary-Lookup@rt.cpan.org',
-				url => 'https://github.com/nigelhorne/Genealogy-Obituary-Lookup/issues',
-				# web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Genealogy-Obituary-Lookup',
-				web => 'https://github.com/nigelhorne/Genealogy-Obituary-Lookup/issues'
+				web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Genealogy-Obituary-Lookup',
+				url => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Genealogy-Obituary-Lookup',
 			}
 		},
 	},
