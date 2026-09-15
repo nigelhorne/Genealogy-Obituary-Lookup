@@ -162,11 +162,15 @@ non-reference argument is passed to `new()`, it is taken as `directory`.
        croak if args were given - the invocation is ambiguous.
     3. If $class is already a blessed object, clone it: merge new args into a
        copy of the existing hash and bless into the same class.
-    4. Merge config-file settings via Object::Configure.
-    5. Validate the logger object if provided.
+    4. Validate the logger object if provided (must have info() and error()).
+    5. Merge config-file settings via Object::Configure.
     6. Resolve the data directory: explicit arg > module-relative default.
-    7. Carp and return undef if the directory is missing or unreadable.
-    8. Bless and return with cache_duration defaulted (overridable by caller).
+    7. For a plain-string directory: (a) reject null bytes immediately
+       (logger->warn + carp + return undef); (b) untaint via regex — the
+       capture is guaranteed to succeed because null bytes were just excluded.
+    8. Carp and call logger->warn if the directory is missing or unreadable;
+       return undef.
+    9. Bless and return with cache_duration defaulted (overridable by caller).
 
 ## search
 
@@ -427,8 +431,8 @@ does not set any locale; test explicitly if your data contains diacritics.
 
 A `directory` string containing a null byte (`\0`) would cause Perl's
 `stat()` to throw a fatal `"Embedded nulls are forbidden"` exception.
-`new()` detects this before the filesystem call and carps gracefully instead
-of dying with an uncatchable error.
+`new()` detects this before the filesystem call, calls the logger's `warn()`
+method if a logger is present, and carps gracefully instead of dying.
 
 ## Taint-mode readiness
 
@@ -517,9 +521,11 @@ This module is provided as-is without any warranty.
 
     𝒏𝒆𝒘(C, A) ≙
       let D = A.directory ∨ module_data_path(C)
-      in  ¬readable(D)                                           ⟹ ⊥
-        ∥  A.logger ≠ ∅ ∧ ¬(can(A.logger,'info') ∧
-                              can(A.logger,'error'))             ⟹ abort
+      in  A.logger ≠ ∅ ∧ ¬(can(A.logger,'info') ∧
+                            can(A.logger,'error'))               ⟹ abort
+        ∥  is_string(D) ∧ null_byte(D)                          ⟹ ⊥
+        ∥  is_string(D) ⟹ D ← untaint(D)          { guaranteed: no null bytes }
+        ∥  ¬readable(D)                                         ⟹ ⊥
         ∥  otherwise   ⟹ ⟨ cache_duration ↦ DEFAULT_CACHE_DURATION ⟩ ⊕ A
 
 ## search

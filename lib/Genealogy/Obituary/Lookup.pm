@@ -215,11 +215,15 @@ L<Log::Log4perl>, L<Log::Any>).
     croak if args were given - the invocation is ambiguous.
  3. If $class is already a blessed object, clone it: merge new args into a
     copy of the existing hash and bless into the same class.
- 4. Merge config-file settings via Object::Configure.
- 5. Validate the logger object if provided.
+ 4. Validate the logger object if provided (must have info() and error()).
+ 5. Merge config-file settings via Object::Configure.
  6. Resolve the data directory: explicit arg > module-relative default.
- 7. Carp and return undef if the directory is missing or unreadable.
- 8. Bless and return with cache_duration defaulted (overridable by caller).
+ 7. For a plain-string directory: (a) reject null bytes immediately
+    (logger->warn + carp + return undef); (b) untaint via regex — the
+    capture is guaranteed to succeed because null bytes were just excluded.
+ 8. Carp and call logger->warn if the directory is missing or unreadable;
+    return undef.
+ 9. Bless and return with cache_duration defaulted (overridable by caller).
 
 =cut
 
@@ -275,24 +279,20 @@ sub new
 		}
 	}
 
-	# Null bytes in a path string cause a fatal "Embedded nulls are forbidden"
-	# error inside Perl's stat() / -d operator.  Reject them early so the module
-	# carps gracefully rather than dying with an uncatchable exception.
-	if(defined($args{'directory'}) && !ref($args{'directory'})
-		&& index($args{'directory'}, "\0") >= 0)
-	{
-		my $msg = $class_in->_i18n('warn_not_dir',
-			{class => $class_in, dir => '(path contains null byte)'});
-		$args{'logger'}->warn($msg) if $args{'logger'};
-		Carp::carp($msg);
-		return;
-	}
-
-	# Taint-mode readiness: untaint the directory value via a strict regex capture
-	# before passing it to filesystem operators (-d, -r).  The pattern accepts any
-	# string that contains no null bytes (empty string included — it reaches -d below
-	# which returns false, triggering the existing carp-and-return path).
+	# Premise: directory, if provided, must be a plain string (not a ref).
+	# Merge the null-byte guard and untaint into one outer block — both share
+	# the same defined+!ref precondition, eliminating a redundant test.
 	if(defined($args{'directory'}) && !ref($args{'directory'})) {
+		# Null bytes cause a fatal "Embedded nulls" inside stat(). Reject first.
+		if(index($args{'directory'}, "\0") >= 0) {
+			my $msg = $class_in->_i18n('warn_not_dir',
+				{class => $class_in, dir => '(path contains null byte)'});
+			$args{'logger'}->warn($msg) if $args{'logger'};
+			Carp::carp($msg);
+			return;
+		}
+		# Conclusion: no null bytes remain, so m/\A([^\0]*)\z/ is guaranteed to
+		# match — the capture is infallible. Untaint for taint-mode callers.
 		($args{'directory'}) = ($args{'directory'} =~ m/\A([^\0]*)\z/ms);
 	}
 
@@ -600,11 +600,11 @@ sub _create_url
 	Carp::croak(__PACKAGE__->_i18n('err_no_source', {package => __PACKAGE__, page => $page}))
 		unless defined $source;
 
+	# Premise: source ∈ {M, F} returns unconditionally above.
+	# Conclusion: the elsif below is only evaluated when source ∉ {M, F}.
 	if($source eq 'M' || $source eq 'F') {
 		return $URLS{$source} . $page;
-	}
-
-	if($source eq 'L') {
+	} elsif($source eq 'L') {
 		# 'L' (local/link) records embed the full URL in newspaper or page
 		return $obit->{'newspaper'}
 			if defined($obit->{'newspaper'}) && $obit->{'newspaper'} =~ m{^https?://};
@@ -714,8 +714,8 @@ does not set any locale; test explicitly if your data contains diacritics.
 
 A C<directory> string containing a null byte (C<\0>) would cause Perl's
 C<stat()> to throw a fatal C<"Embedded nulls are forbidden"> exception.
-C<new()> detects this before the filesystem call and carps gracefully instead
-of dying with an uncatchable error.
+C<new()> detects this before the filesystem call, calls the logger's C<warn()>
+method if a logger is present, and carps gracefully instead of dying.
 
 =head2 Taint-mode readiness
 
@@ -827,9 +827,11 @@ This module is provided as-is without any warranty.
 
   𝒏𝒆𝒘(C, A) ≙
     let D = A.directory ∨ module_data_path(C)
-    in  ¬readable(D)                                           ⟹ ⊥
-      ∥  A.logger ≠ ∅ ∧ ¬(can(A.logger,'info') ∧
-                            can(A.logger,'error'))             ⟹ abort
+    in  A.logger ≠ ∅ ∧ ¬(can(A.logger,'info') ∧
+                          can(A.logger,'error'))               ⟹ abort
+      ∥  is_string(D) ∧ null_byte(D)                          ⟹ ⊥
+      ∥  is_string(D) ⟹ D ← untaint(D)          { guaranteed: no null bytes }
+      ∥  ¬readable(D)                                         ⟹ ⊥
       ∥  otherwise   ⟹ ⟨ cache_duration ↦ DEFAULT_CACHE_DURATION ⟩ ⊕ A
 
 =head2 search
