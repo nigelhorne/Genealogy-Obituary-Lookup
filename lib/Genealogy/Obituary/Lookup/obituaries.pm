@@ -23,7 +23,8 @@ our @ISA = ('Database::Abstraction');
 =head1 SYNOPSIS
 
 This module is not intended to be used directly.  It is instantiated
-internally by L<Genealogy::Obituary::Lookup>.
+internally by L<Genealogy::Obituary::Lookup>
+as a driver to access the C<obituaries.sql> file.
 
     use Genealogy::Obituary::Lookup;
     my $obits = Genealogy::Obituary::Lookup->new();

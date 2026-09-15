@@ -15,7 +15,7 @@ Genealogy::Obituary::Lookup - Lookup an obituary in the ODT/Rootsweb/funeral-not
 
 # VERSION
 
-Version 0.20
+Version 0.21
 
 # SYNOPSIS
 
