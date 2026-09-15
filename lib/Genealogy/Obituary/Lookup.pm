@@ -262,6 +262,14 @@ sub new
 		return;
 	}
 
+	# Taint-mode readiness: untaint the directory value via a strict regex capture
+	# before passing it to filesystem operators (-d, -r).  The pattern accepts any
+	# string that contains no null bytes (empty string included — it reaches -d below
+	# which returns false, triggering the existing carp-and-return path).
+	if(defined($args{'directory'}) && !ref($args{'directory'})) {
+		($args{'directory'}) = ($args{'directory'} =~ m/\A([^\0]*)\z/ms);
+	}
+
 	if(defined($args{'directory'}) && !((-d $args{'directory'}) && (-r $args{'directory'}))) {
 		my $msg = $class_in->_i18n('warn_not_dir',
 			{class => $class_in, dir => $args{'directory'}});
@@ -509,7 +517,7 @@ sub search
 	my $obit = $self->{'obituaries'}->fetchrow_hashref($params)
 		or return;
 	$obit->{'url'} = _create_url($obit);
-	eval { Data::Reuse::fixate(%{$obit}) };
+	{ local $@; eval { Data::Reuse::fixate(%{$obit}) } };
 
 	return Return::Set::set_return($obit, { type => 'hashref', min => 1 });
 }
@@ -568,7 +576,11 @@ sub _i18n
 	my $tpl = $MESSAGES{$key}
 		// Carp::croak("Unknown i18n key '$key'");
 	$args //= {};
-	(my $msg = $tpl) =~ s/%\{(\w+)\}/$args->{$1} \/\/ ''/ge;
+	# Pre-populate replacement table from template keys so the substitution
+	# needs no /e modifier — eliminates any eval of replacement text entirely.
+	my %sub_vals;
+	$sub_vals{$1} = $args->{$1} // '' while $tpl =~ m/%\{(\w+)\}/g;
+	(my $msg = $tpl) =~ s/%\{(\w+)\}/$sub_vals{$1}/g;
 	return $msg;
 }
 

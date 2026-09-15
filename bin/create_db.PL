@@ -27,6 +27,7 @@ use LWP::UserAgent::WithCache;
 use Readonly;
 use Text::CSV;
 use Try::Tiny;
+use URI::Escape qw(uri_escape);
 
 # Suppress non-fatal "uninitialized" warnings from HTML parsers; fatal-ise
 # them if they occur inside our own business logic.
@@ -258,16 +259,26 @@ sub mlarchives
 
 	my @lines;
 	if($ENV{'MLARCHIVEDIR'}) {
+		my $base = File::Spec->canonpath($ENV{'MLARCHIVEDIR'});
+		croak "MLARCHIVEDIR '$base' must be an absolute path"
+			unless File::Spec->file_name_is_absolute($base);
 		my $local = ($page eq 'other')
-			? File::Spec->catfile($ENV{'MLARCHIVEDIR'}, 'other')
-			: File::Spec->catfile($ENV{'MLARCHIVEDIR'}, "emails?listname=gen-obit&page=$page");
+			? File::Spec->catfile($base, 'other')
+			: File::Spec->catfile($base, "emails?listname=gen-obit&page=$page");
+		croak "MLARCHIVEDIR path escapes base directory: $local"
+			unless index(File::Spec->canonpath($local), $base) == 0;
 		return 0 unless -r $local;
 		printf "%-70s\r", $local if $page eq 'other';
 		@lines = read_file($local);
 	} elsif($ENV{'MLARCHIVE_DIR'}) {
+		my $base = File::Spec->canonpath($ENV{'MLARCHIVE_DIR'});
+		croak "MLARCHIVE_DIR '$base' must be an absolute path"
+			unless File::Spec->file_name_is_absolute($base);
 		my $local = ($page eq 'other')
-			? File::Spec->catfile($ENV{'MLARCHIVE_DIR'}, 'other')
-			: File::Spec->catfile($ENV{'MLARCHIVE_DIR'}, "emails?listname=gen-obit&page=$page");
+			? File::Spec->catfile($base, 'other')
+			: File::Spec->catfile($base, "emails?listname=gen-obit&page=$page");
+		croak "MLARCHIVE_DIR path escapes base directory: $local"
+			unless index(File::Spec->canonpath($local), $base) == 0;
 		return 0 unless -r $local;
 		printf "%-70s\r", $local if $page eq 'other';
 		@lines = read_file($local);
@@ -522,7 +533,7 @@ sub funeral_notices
 {
 	my ($last, $page) = @_;
 
-	my $url      = "https://funeral-notices.co.uk/notice/$last/$page";
+	my $url      = 'https://funeral-notices.co.uk/notice/' . uri_escape($last) . "/$page";
 	my $real_last = $last;
 
 	my $response = $ua->get($url);
@@ -544,7 +555,7 @@ sub funeral_notices
 	}
 	$real_last = "O'Neill" if $last eq 'oneill';
 
-	if($content =~ /"Click here to view the tribute page for (.+?) $real_last.*?"/is) {
+	if($content =~ /"Click here to view the tribute page for (.+?) \Q$real_last\E.*?"/is) {
 		my $first = $1;
 		my ($place, $age, $newspaper, $date);
 
