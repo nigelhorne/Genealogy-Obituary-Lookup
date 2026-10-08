@@ -2,11 +2,7 @@
 
 use strict;
 use Test::HTTPStatus;
-use Test::Most tests => 20;
-
-use lib 'lib';
-use lib 't/lib';
-use MyLogger;
+use Test::Most tests => 19;
 
 BEGIN { use_ok('Genealogy::Obituary::Lookup') }
 
@@ -17,7 +13,7 @@ SKIP: {
 
 	my $search;
 	if($ENV{'TEST_VERBOSE'}) {
-		$search = new_ok('Genealogy::Obituary::Lookup' => [ logger => MyLogger->new() ]);
+		$search = new_ok('Genealogy::Obituary::Lookup' => [ logger => Test::Log::Abstraction->new() ]);
 	} else {
 		$search = new_ok('Genealogy::Obituary::Lookup');
 	}
@@ -91,7 +87,8 @@ SKIP: {
 		diag(Data::Dumper->new([$erickson])->Dump());
 	}
 	cmp_ok($erickson->{'url'}, 'eq', 'https://www.beaconjournal.com/obituaries/pwoo0723808', 'Check locally added data');
-	http_ok($erickson->{'url'}, HTTP_OK);
+	# Gives 402 HTTP error, probably a paywall
+	# http_ok($erickson->{'url'}, HTTP_OK);
 
 	# Verify "Mc" is imported correctly.
 	my @mc_carthy = $search->search(first => 'Jean', middle => 'Emily', last => 'McCarthy');

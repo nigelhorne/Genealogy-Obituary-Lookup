@@ -26,10 +26,6 @@ use Scalar::Util qw(blessed refaddr weaken);
 use Test::Most;
 use Test::Returns;
 
-use lib 'lib';
-use lib 't/lib';
-use MyLogger;
-
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------

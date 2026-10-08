@@ -508,10 +508,12 @@ The returned hashrefs always include a C<url> key pointing to the source archive
 =head3 PSEUDOCODE
 
  1. Croak unless $self is a blessed object.
- 2. Parse args with Params::Get; validate schema with Params::Validate::Strict.
- 3. Explicitly croak if 'last' is undef or empty - Params::Validate::Strict
-    passes undef through for defined-but-required fields.
- 4. Lazily open the obituaries DB handle (once per object lifetime).
+ 2. Parse args with Params::Get.
+ 3. Explicitly croak if 'last' is undef or empty (before validate_strict, so our
+    _i18n message is always emitted — Params::Validate::Strict 0.41+ throws its
+    own error for undef non-optional fields).
+ 4. Validate schema with Params::Validate::Strict.
+ 5. Lazily open the obituaries DB handle (once per object lifetime).
  5. Croak if the DB handle could not be initialised.
  6. List context: fetchall, attach URL, fixate string values, return list.
  7. Scalar context: fetchone, attach URL, fixate string values, return hashref.
@@ -531,8 +533,19 @@ sub search
 	Carp::croak(__PACKAGE__->_i18n('err_no_args', {package => __PACKAGE__}))
 		unless @_;
 
+	my $raw_params = Params::Get::get_params('last', @_);
+
+	# Check mandatory 'last' before validate_strict — Params::Validate::Strict 0.41+
+	# now throws its own error for undef non-optional fields, which would bypass
+	# our _i18n message.  We own this check so our error text is always emitted.
+	unless(defined($raw_params->{'last'}) && length($raw_params->{'last'}) > 0) {
+		$self->{'logger'}->error(__PACKAGE__->_i18n('err_no_last'))
+			if $self->{'logger'};
+		Carp::croak(__PACKAGE__->_i18n('err_no_last'));
+	}
+
 	my $params = Params::Validate::Strict::validate_strict({
-		args   => Params::Get::get_params('last', @_),
+		args   => $raw_params,
 		schema => {
 			'last' => {
 				type    => 'string',
@@ -551,14 +564,6 @@ sub search
 			},
 		},
 	});
-
-	# Params::Validate::Strict enforces schema structure but passes undef values
-	# for defined keys, so we check the mandatory 'last' field explicitly here.
-	unless(defined($params->{'last'}) && length($params->{'last'}) > 0) {
-		$self->{'logger'}->error(__PACKAGE__->_i18n('err_no_last'))
-			if $self->{'logger'};
-		Carp::croak(__PACKAGE__->_i18n('err_no_last'));
-	}
 
 	# Lazily initialise the DB handle — shared for the lifetime of the object
 	$self->{'obituaries'} //= Genealogy::Obituary::Lookup::obituaries->new(
