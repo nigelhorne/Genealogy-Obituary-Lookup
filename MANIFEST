@@ -30,7 +30,6 @@ t/fixme.t
 t/function.t
 t/fuzz.t
 t/integration.t
-t/lib/MyLogger.pm
 t/links.t
 t/locales.t
 t/logic-reducer.t

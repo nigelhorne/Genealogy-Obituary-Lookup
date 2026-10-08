@@ -39,10 +39,7 @@ use Readonly;
 use Scalar::Util  qw(blessed refaddr);
 use Test::Most;
 use Test::Returns;
-
-use lib 'lib';
-use lib 't/lib';
-use MyLogger;
+use Test::Log::Abstraction;
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -215,7 +212,7 @@ subtest '[N-3A] new() no logger arg → logger check skipped' => sub {
 subtest '[N-3B-V] new() valid logger → accepted, continues to bless' => sub {
 	# Logger is blessed and has info() and error()
 	my $dir = _dir();
-	my $obj = $PKG->new(directory => $dir, logger => MyLogger->new());
+	my $obj = $PKG->new(directory => $dir, logger => Test::Log::Abstraction->new());
 	ok(defined $obj && blessed($obj), '[N-3B-V] valid logger → object returned');
 };
 
@@ -287,7 +284,7 @@ subtest '[N-5B-I] new() null byte in path, with logger → logger->warn + carp +
 	# Logger branch fires inside the null-byte guard
 	my $dir     = _dir();
 	my $badpath = "$dir/some\x00path";
-	my $logger  = MyLogger->new();
+	my $logger  = Test::Log::Abstraction->new();
 	my $obj;
 	warnings_exist { $obj = $PKG->new(directory => $badpath, logger => $logger) }
 		[qr/not a directory/i],
@@ -331,7 +328,7 @@ subtest '[N-6C-II] new() bad directory, no logger → carp + return undef' => su
 
 subtest '[N-6C-I] new() bad directory, with logger → logger->warn + carp + undef' => sub {
 	my $obj;
-	warnings_exist { $obj = $PKG->new(directory => '/no/such/path', logger => MyLogger->new()) }
+	warnings_exist { $obj = $PKG->new(directory => '/no/such/path', logger => Test::Log::Abstraction->new()) }
 		[qr/not a directory/i],
 		'[N-6C-I] bad dir + logger → carps';
 	ok(!defined $obj, '[N-6C-I] returns undef (logger->warn branch fired)');
@@ -396,7 +393,7 @@ subtest '[S-no-last-no-log] search() last=undef, no logger → croak err_no_last
 
 subtest '[S-no-last-log] search() last=undef, with logger → logger path + croak' => sub {
 	# Guard 4 (logger branch): logger->error() called before croak
-	my $obj = _obj(logger => MyLogger->new());
+	my $obj = _obj(logger => Test::Log::Abstraction->new());
 	$obj->{obituaries} = bless {}, $DRV;    # keep pre-injected handle
 	throws_ok { $obj->search(last => undef) }
 		qr/last.*is mandatory|Value for 'last'/i,
@@ -414,7 +411,7 @@ subtest '[S-no-obit-no-log] search() obituaries->new() returns undef → croak (
 
 subtest '[S-no-obit-log] search() obituaries->new() returns undef → logger + croak' => sub {
 	# Guard 5 (logger branch): logger->error() called before croak
-	my $obj = $PKG->new(directory => _dir(), logger => MyLogger->new());
+	my $obj = $PKG->new(directory => _dir(), logger => Test::Log::Abstraction->new());
 	_set_db_returns_undef();
 	eval { $obj->search(last => 'Smith') };
 	_restore_db();

@@ -15,14 +15,11 @@ use warnings;
 use File::Temp	qw(tempdir);
 use Readonly;
 use Scalar::Util	qw(blessed refaddr);
+use Test::Log::Abstraction;
 use Test::Memory::Cycle;
 use Test::Mockingbird;
 use Test::Most;
 use Test::Returns;
-
-use lib 'lib';
-use lib 't/lib';
-use MyLogger;
 
 # ---------------------------------------------------------------------------
 # Constants — no magic strings scattered through the test body
@@ -133,7 +130,7 @@ subtest 'new() — non-existent directory carps and returns undef' => sub {
 };
 
 subtest 'new() — valid logger object is accepted' => sub {
-	my $lg  = MyLogger->new();
+	my $lg  = Test::Log::Abstraction->new();
 	my $obj = _new_obj(logger => $lg);
 	ok(defined $obj,           'object is constructed with a valid logger');
 	# Object::Configure may wrap the logger in Log::Abstraction; check the

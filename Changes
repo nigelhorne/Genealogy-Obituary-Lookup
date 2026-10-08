@@ -3,6 +3,7 @@ Revision history for Genealogy::Obituary::Lookup
 0.22
 	[ Bug Fixes ]
 	- Handle new PVS functionality
+	- Use Test::Log::Abstraction
 
 0.21	Tue Sep 15 09:54:23 AM EDT 2026
 	[ Enhancements ]

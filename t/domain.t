@@ -27,10 +27,7 @@ use Readonly;
 use Scalar::Util  qw(blessed looks_like_number refaddr);
 use Test::Most;
 use Test::Returns;
-
-use lib 'lib';
-use lib 't/lib';
-use MyLogger;
+use Test::Log::Abstraction;
 
 # ---------------------------------------------------------------------------
 # Constants — all domain boundaries in one place
@@ -206,7 +203,7 @@ subtest 'new() directory [BVA]: /dev/null (exists but is not a dir) → returns 
 
 subtest 'new() logger [EP-V]: object with info(), warn() and error() → accepted' => sub {
 	my $dir = _dir();
-	my $obj = $PKG->new(directory => $dir, logger => MyLogger->new());
+	my $obj = $PKG->new(directory => $dir, logger => Test::Log::Abstraction->new());
 	ok(defined $obj && blessed($obj), 'valid logger object accepted');
 };
 

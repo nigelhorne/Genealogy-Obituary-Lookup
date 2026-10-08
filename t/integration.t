@@ -22,10 +22,6 @@ use Test::Most;
 use Test::Returns;
 use YAML::XS     qw(DumpFile);
 
-use lib 'lib';
-use lib 't/lib';
-use MyLogger;
-
 BEGIN { use_ok('Genealogy::Obituary::Lookup') }
 
 # ---------------------------------------------------------------------------
