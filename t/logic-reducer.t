@@ -30,7 +30,6 @@ BEGIN {
 }
 
 use lib 'lib';
-use lib 't/lib';
 use Genealogy::Obituary::Lookup;
 
 use File::Temp qw(tempdir);
