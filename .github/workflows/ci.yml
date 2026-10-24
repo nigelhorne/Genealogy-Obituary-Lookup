@@ -3,7 +3,7 @@
 name: CI
 
 permissions:
-  contents: write  # needed to push to gh-pages
+  contents: write # needed to push to gh-pages
 
 on:
   push:
@@ -65,7 +65,6 @@ jobs:
           mkdir -p cover_html
           cover -report html -outputdir cover_html
       # working-directory: ${{ github.workspace }}
-
       - name: Check for HTML report
         run: |
           if [ ! -f cover_html/coverage.html ]; then

@@ -18,7 +18,7 @@ input:
     type: string
     min: 1
     max: 100
-    matches: "^[\\w\\-]+$"  # Allow hyphens in surnames
+    matches: "^[\\w\\-]+$" # Allow hyphens in surnames
   first:
     type: string
     optional: true

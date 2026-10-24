@@ -8,9 +8,9 @@ on:
   pull_request:
   push:
     branches:
-      - '*'
+      - "*"
     tags-ignore:
-      - '*'
+      - "*"
 
 jobs:
   build:
@@ -20,7 +20,6 @@ jobs:
       image: perl:stable
     steps:
       - uses: actions/checkout@v7
-      - uses: codecov/codecov-action@v7
       - name: Install Dependencies
         run: |
           cpanm --quiet --notest --installdeps .
@@ -32,12 +31,6 @@ jobs:
         env:
           AUTHOR_TESTING: 1
           AUTOMATED_TESTING: 1
-      # - name: Download codecov
-      #   run: |
-      #     Replace `linux` below with the appropriate OS
-      #     Options are `alpine`, `linux`, `macos`, `windows`
-      #     curl -Os https://uploader.codecov.io/latest/linux/codecov
-      #     chmod +x codecov
       - name: Submit codecov
         run: |
           cover -test
